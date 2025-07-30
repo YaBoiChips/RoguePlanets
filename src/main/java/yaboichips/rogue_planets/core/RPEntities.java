@@ -8,7 +8,7 @@ import net.minecraftforge.registries.RegistryObject;
 import yaboichips.rogue_planets.common.entities.monsters.Alien;
 import yaboichips.rogue_planets.common.entities.monsters.Cyclops;
 import yaboichips.rogue_planets.common.entities.workers.augmentor.Augmentor;
-import yaboichips.rogue_planets.common.entities.workers.canon.CanonEntity;
+import yaboichips.rogue_planets.common.entities.canon.CanonEntity;
 import yaboichips.rogue_planets.common.entities.workers.ceo.CEO;
 import yaboichips.rogue_planets.common.entities.workers.forgemaster.ForgeMaster;
 import yaboichips.rogue_planets.common.entities.workers.merchant.RPMerchant;

@@ -1,4 +1,4 @@
-package yaboichips.rogue_planets.common.entities.workers.canon;
+package yaboichips.rogue_planets.common.entities.canon;
 
 import com.mojang.serialization.DynamicOps;
 import commoble.infiniverse.api.InfiniverseAPI;
@@ -195,8 +195,8 @@ public class CanonEntity extends Entity implements GeoEntity {
     private void loadPlanetInventory(ServerPlayer player, PlanetInventoryContainer cap) {
         for (int i = 0; i < cap.getItems().size(); i++) {
             ItemStack item = cap.getItems().get(i).copy();
-            if (item.getItem() instanceof LevelableItem levelableItem) {
-                item.setDamageValue((int) Math.round((50 * Math.pow(1 + 0.1, levelableItem.getLevel(item)))));
+            if (item.getItem() instanceof LevelableItem) {
+                item.setDamageValue(-item.getMaxDamage());
             }
             player.getInventory().setItem(i, item);
         }

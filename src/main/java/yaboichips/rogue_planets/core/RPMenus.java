@@ -5,7 +5,6 @@ import net.minecraftforge.common.extensions.IForgeMenuType;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegistryObject;
-import yaboichips.rogue_planets.common.blocks.canoncontroller.CanonControllerMenu;
 import yaboichips.rogue_planets.common.entities.workers.augmentor.AugmentorMenu;
 import yaboichips.rogue_planets.common.entities.workers.ceo.CEOMenu;
 import yaboichips.rogue_planets.common.entities.workers.forgemaster.ForgeMasterMenu;
@@ -21,5 +20,4 @@ public class RPMenus {
     public static final RegistryObject<MenuType<RPMerchantMenu>> MERCHANT_MENU = MENUS.register("rp_merchant_menu", () -> IForgeMenuType.create(RPMerchantMenu::new));
     public static final RegistryObject<MenuType<AugmentorMenu>> AUGMENTOR_MENU = MENUS.register("augmentor_menu", () -> IForgeMenuType.create(AugmentorMenu::new));
     public static final RegistryObject<MenuType<CEOMenu>> CEO_MENU = MENUS.register("ceo_menu", () -> IForgeMenuType.create(CEOMenu::new));
-    public static final RegistryObject<MenuType<CanonControllerMenu>> CANON_CONTROLLER = MENUS.register("canon_controller", () -> IForgeMenuType.create(CanonControllerMenu::new));
 }

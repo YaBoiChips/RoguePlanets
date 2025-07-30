@@ -1,4 +1,4 @@
-package yaboichips.rogue_planets.common.entities.workers.canon;
+package yaboichips.rogue_planets.common.entities.canon;
 
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import software.bernie.geckolib.renderer.GeoEntityRenderer;

@@ -17,7 +17,6 @@ import yaboichips.rogue_planets.common.items.crystals.Pyrolith;
 import yaboichips.rogue_planets.common.items.tools.PlaneteerPickaxe;
 
 import static yaboichips.rogue_planets.RoguePlanets.MODID;
-import static yaboichips.rogue_planets.core.RPBlocks.CANON_CONTROLLER;
 
 public class RPItems {
 
@@ -27,7 +26,6 @@ public class RPItems {
 
 
 //    public static final RegistryObject<Item> TELEPORTER_BLOCK_ITEM = ITEMS.register("teleporter_block", () -> new BlockItem(TELEPORTER_BLOCK.get(), new Item.Properties()));
-    public static final RegistryObject<Item> CANON_CONTROLLER_BLOCK_ITEM = ITEMS.register("canon_controller", () -> new BlockItem(CANON_CONTROLLER.get(), new Item.Properties()));
 
     //Raw Materials
     public static final RegistryObject<Item> RUBY = ITEMS.register("ruby",() -> new Item(new Item.Properties()));

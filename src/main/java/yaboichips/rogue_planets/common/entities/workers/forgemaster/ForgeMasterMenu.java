@@ -92,7 +92,7 @@ public class ForgeMasterMenu extends AbstractContainerMenu {
                 if (((LevelableItem) stack.getItem()).getLevel(stack) < 20) {
                     if (PlayerDataUtils.getCredits((ServerPlayer) player) >= stack.getTag().getInt("LevelCost")) {
                         ((LevelableItem) stack.getItem()).levelUp(stack);
-                        stack.setDamageValue(stack.getMaxDamage());
+                        stack.setDamageValue(-stack.getMaxDamage());
                         PlayerDataUtils.subCredits((ServerPlayer) player, stack.getTag().getInt("LevelCost"));
                         ((LevelableItem) stack.getItem()).setLevelUpCost(stack, 50 * ((LevelableItem) stack.getItem()).getLevel(stack));
                     } else {

@@ -10,7 +10,6 @@ import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegistryObject;
 import yaboichips.rogue_planets.common.blocks.RopeBlock;
 import yaboichips.rogue_planets.common.blocks.TeleporterBlock;
-import yaboichips.rogue_planets.common.blocks.canoncontroller.CanonControllerBlock;
 import yaboichips.rogue_planets.common.items.SpaceTorch;
 
 import static yaboichips.rogue_planets.RoguePlanets.MODID;
@@ -26,8 +25,6 @@ public class RPBlocks {
     public static final RegistryObject<Block> ELECTRYTE_BLOCK = BLOCKS.register("electryte_block", () -> new Block(BlockBehaviour.Properties.of().lightLevel((light) -> 6).noOcclusion()));
     public static final RegistryObject<Block> CHLOROSYNTH_BLOCK = BLOCKS.register("chlorosynth_block", () -> new Block(BlockBehaviour.Properties.of().lightLevel((light) -> 6).noOcclusion()));
     public static final RegistryObject<Block> TP = BLOCKS.register("tp", () -> new TeleporterBlock(BlockBehaviour.Properties.of().lightLevel((light) -> 6).noOcclusion()));
-    public static final RegistryObject<Block> CANON_CONTROLLER = BLOCKS.register("canon_controller", CanonControllerBlock::new);
-
 
     public static final RegistryObject<Block> DEEPSLATE_RUBY_ORE = BLOCKS.register("deepslate_ruby_ore", RPBlocks::createDeepslateOreBlock);
     public static final RegistryObject<Block> DEEPSLATE_SAPPHIRE_ORE = BLOCKS.register("deepslate_sapphire_ore", RPBlocks::createDeepslateOreBlock);
