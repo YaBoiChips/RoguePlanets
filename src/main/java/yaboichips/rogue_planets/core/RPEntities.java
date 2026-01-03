@@ -11,7 +11,7 @@ import yaboichips.rogue_planets.common.entities.workers.augmentor.Augmentor;
 import yaboichips.rogue_planets.common.entities.canon.CanonEntity;
 import yaboichips.rogue_planets.common.entities.workers.ceo.CEO;
 import yaboichips.rogue_planets.common.entities.workers.forgemaster.ForgeMaster;
-import yaboichips.rogue_planets.common.entities.workers.merchant.RPMerchant;
+import yaboichips.rogue_planets.common.entities.workers.merchant.Merchant;
 
 import static yaboichips.rogue_planets.RoguePlanets.MODID;
 
@@ -20,7 +20,7 @@ public class RPEntities {
     public static final DeferredRegister<EntityType<?>> ENTITIES = DeferredRegister.create(ForgeRegistries.ENTITY_TYPES, MODID);
 
     public static final RegistryObject<EntityType<ForgeMaster>> FORGE_MASTER = ENTITIES.register("forge_master", () -> EntityType.Builder.of(ForgeMaster::new, MobCategory.MISC).sized(0.8f, 1.8f).build("forge_master"));
-    public static final RegistryObject<EntityType<RPMerchant>> RP_MERCHANT = ENTITIES.register("merchant", () -> EntityType.Builder.of(RPMerchant::new, MobCategory.MISC).sized(0.8f, 1.8f).build("merchant"));
+    public static final RegistryObject<EntityType<Merchant>> RP_MERCHANT = ENTITIES.register("merchant", () -> EntityType.Builder.of(Merchant::new, MobCategory.MISC).sized(0.8f, 1.8f).build("merchant"));
     public static final RegistryObject<EntityType<Augmentor>> AUGMENTOR = ENTITIES.register("augmentor", () -> EntityType.Builder.of(Augmentor::new, MobCategory.MISC).sized(0.8f, 1.8f).build("augmentor"));
     public static final RegistryObject<EntityType<CEO>> CEO = ENTITIES.register("ceo", () -> EntityType.Builder.of(CEO::new, MobCategory.MISC).sized(0.8f, 1.8f).build("ceo"));
     public static final RegistryObject<EntityType<Cyclops>> CYCLOPS = ENTITIES.register("cyclops", () -> EntityType.Builder.of(Cyclops::new, MobCategory.MONSTER).sized(0.8f, 1.8f).build("cyclops"));

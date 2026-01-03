@@ -6,7 +6,7 @@ import net.minecraft.commands.Commands;
 import net.minecraft.commands.arguments.EntityArgument;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
-import yaboichips.rogue_planets.common.world.parties.PartyData;
+import yaboichips.rogue_planets.common.nbt.parties.PartyData;
 
 import java.util.UUID;
 

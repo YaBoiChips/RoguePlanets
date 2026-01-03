@@ -1,9 +1,8 @@
 package yaboichips.rogue_planets.network;
 
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.network.NetworkEvent;
-import yaboichips.rogue_planets.common.entities.workers.merchant.RPMerchantMenu;
+import yaboichips.rogue_planets.common.entities.workers.merchant.MerchantMenu;
 
 import java.util.function.Supplier;
 
@@ -25,7 +24,7 @@ public class SellItemPacket {
         NetworkEvent.Context context = contextSupplier.get();
         context.enqueueWork(() -> {
             if (context.getSender() != null) {
-                if (context.getSender().containerMenu instanceof RPMerchantMenu menu) {
+                if (context.getSender().containerMenu instanceof MerchantMenu menu) {
                     menu.buyFromPlayer();
                 }
             }

@@ -46,8 +46,6 @@ public class RPBlocks {
     public static final RegistryObject<Block> THALLIUM_ORE = BLOCKS.register("thallium_ore", RPBlocks::createOreBlock);
     public static final RegistryObject<Block> QUARTZINE_ORE = BLOCKS.register("quartzine_ore", RPBlocks::createOreBlock);
 
-//    public static final RegistryObject<Block> CANON_CONTROLLER = BLOCKS.register("canon_controller", CanonControllerBlock::new);
-
     public static Block createDeepslateOreBlock() {
         return new Block(BlockBehaviour.Properties.copy(Blocks.DEEPSLATE_COAL_ORE));
     }

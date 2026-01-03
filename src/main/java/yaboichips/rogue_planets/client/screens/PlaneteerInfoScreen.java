@@ -15,9 +15,7 @@ public class PlaneteerInfoScreen extends Screen {
     public PlaneteerInfoScreen(int credits) {
         super(Component.literal("Planeteer Manuel"));
         this.credits = credits;
-
     }
-
     @Override
     protected void init() {
         super.init();
@@ -25,12 +23,8 @@ public class PlaneteerInfoScreen extends Screen {
 
     @Override
     public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
-        // Draw the background
         this.renderBackground(guiGraphics);
-
         addInt("Credits", credits, 10, 10);
-
-        // Render all integers
         for (IntRenderData data : intDataList) {
             if (data.description == null) {
                 guiGraphics.drawString(this.font, String.valueOf(data.value), data.x, data.y, 0xFFFFFF, false);
@@ -42,16 +36,10 @@ public class PlaneteerInfoScreen extends Screen {
         super.render(guiGraphics, mouseX, mouseY, partialTicks);
     }
 
-    /**
-     * Adds an integer to be rendered on the screen at the specified position.
-     *
-     * @param value The integer value to display.
-     * @param x     The x-coordinate to render the integer.
-     * @param y     The y-coordinate to render the integer.
-     */
     public void addInt(int value, int x, int y) {
         this.intDataList.add(new IntRenderData(null, value, x, y));
     }
+
     public void addInt(String description, int value, int x, int y) {
         this.intDataList.add(new IntRenderData(description, value, x, y));
     }

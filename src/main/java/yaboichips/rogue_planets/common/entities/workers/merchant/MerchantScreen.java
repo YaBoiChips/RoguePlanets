@@ -15,11 +15,11 @@ import yaboichips.rogue_planets.network.SellItemPacket;
 
 import static yaboichips.rogue_planets.RoguePlanets.MODID;
 
-public class MerchantScreen extends AbstractContainerScreen<RPMerchantMenu> {
+public class MerchantScreen extends AbstractContainerScreen<MerchantMenu> {
     private static final ResourceLocation TEXTURE = new ResourceLocation(MODID, "textures/gui/merchant.png");
 
     private String credits;
-    public MerchantScreen(RPMerchantMenu menu, Inventory inventory, Component title) {
+    public MerchantScreen(MerchantMenu menu, Inventory inventory, Component title) {
         super(menu, inventory, title);
         this.imageWidth = 256;
         this.imageHeight = 256;
@@ -34,8 +34,8 @@ public class MerchantScreen extends AbstractContainerScreen<RPMerchantMenu> {
         for (int i = 0; i < MerchantSales.SALES.size(); i++) {
             MerchantSales sale = MerchantSales.SALES.get(i);
 
-            int x = this.leftPos + 6; // Position relative to the screen
-            int y = this.topPos + 6 + i * 20; // Stack buttons vertically
+            int x = this.leftPos + 6;
+            int y = this.topPos + 6 + i * 20;
 
             Button button = new CustomItemButton(x, y, 76, 20, sale.item(), sale.price(), btn -> RoguePackets.CHANNEL.sendToServer(new BuyItemPacket(sale.item(), sale.price())));
 

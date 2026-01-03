@@ -3,7 +3,7 @@ package yaboichips.rogue_planets.network;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.network.NetworkEvent;
-import yaboichips.rogue_planets.common.entities.workers.merchant.RPMerchantMenu;
+import yaboichips.rogue_planets.common.entities.workers.merchant.MerchantMenu;
 
 import java.util.function.Supplier;
 
@@ -35,7 +35,7 @@ public class BuyItemPacket {
             // Ensure we are on the server side
             if (context.getSender() != null) {
                 // Get the player and their open menu
-                if (context.getSender().containerMenu instanceof RPMerchantMenu menu) {
+                if (context.getSender().containerMenu instanceof MerchantMenu menu) {
                     ItemStack receivedStack = packet.itemStack;
                     int price = packet.value;
                     menu.purchaseItem(receivedStack, price);

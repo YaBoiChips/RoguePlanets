@@ -41,7 +41,7 @@ import yaboichips.rogue_planets.capabilties.player.PlayerDataUtils;
 import yaboichips.rogue_planets.common.containers.PlanetInventoryContainer;
 import yaboichips.rogue_planets.common.containers.SaveableSimpleContainer;
 import yaboichips.rogue_planets.common.items.LevelableItem;
-import yaboichips.rogue_planets.common.world.parties.PartyData;
+import yaboichips.rogue_planets.common.nbt.parties.PartyData;
 import yaboichips.rogue_planets.core.RPEntities;
 
 import static yaboichips.rogue_planets.RoguePlanets.MODID;
