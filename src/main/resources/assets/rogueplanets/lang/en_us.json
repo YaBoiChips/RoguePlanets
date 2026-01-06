@@ -1,3 +1,63 @@
 {
-  "item.rogueplanets.planeteer_pickaxe": "Planeteer's Pickaxe"
+  "item.rogueplanets.ruby": "Ruby",
+  "item.rogueplanets.sapphire": "Sapphire",
+  "item.rogueplanets.topaz": "Topaz",
+  "item.rogueplanets.opal": "Opal",
+  "item.rogueplanets.amber": "Amber",
+  "item.rogueplanets.onyx": "Onyx",
+  "item.rogueplanets.pyrite": "Pyrite",
+  "item.rogueplanets.quartzine": "Quartzine",
+
+  "item.rogueplanets.thallium_ingot": "Thallium Ingot",
+  "item.rogueplanets.thallium_dust": "Thallium Dust",
+  "item.rogueplanets.energetic_dust": "Energetic Dust",
+
+  "item.rogueplanets.planeteer_pickaxe": "Planeteer Pickaxe",
+  "item.rogueplanets.planeteer_helmet": "Planeteer Helmet",
+  "item.rogueplanets.planeteer_chestplate": "Planeteer Chestplate",
+  "item.rogueplanets.planeteer_leggings": "Planeteer Leggings",
+  "item.rogueplanets.planeteer_boots": "Planeteer Boots",
+
+  "item.rogueplanets.rope": "Rope",
+  "item.rogueplanets.space_torch": "Space Torch",
+  "item.rogueplanets.jerky": "Jerky",
+  "item.rogueplanets.ammo": "Magazine",
+
+  "item.rogueplanets.test_augment": "Test Augment",
+
+  "item.rogueplanets.credit": "Credit",
+  "item.rogueplanets.high_credit": "High Credit",
+  "item.rogueplanets.rare_credit": "Rare Credit",
+  "item.rogueplanets.legendary_credit": "Legendary Credit",
+  "item.rogueplanets.planeteer_manuel": "Planeteer Manual",
+
+  "item.rogueplanets.pyrolith": "Pyrolith",
+  "item.rogueplanets.electryte": "Electryte",
+  "item.rogueplanets.chlorosynth": "Chlorosynth",
+  "item.rogueplanets.azurium": "Azurium",
+
+  "block.rogueplanets.azurium_block": "Azurium Block",
+  "block.rogueplanets.pyrolith_block": "Pyrolith Block",
+  "block.rogueplanets.electryte_block": "Electryte Block",
+  "block.rogueplanets.chlorosynth_block": "Chlorosynth Block",
+
+  "block.rogueplanets.deepslate_ruby_ore": "Deepslate Ruby Ore",
+  "block.rogueplanets.deepslate_sapphire_ore": "Deepslate Sapphire Ore",
+  "block.rogueplanets.deepslate_topaz_ore": "Deepslate Topaz Ore",
+  "block.rogueplanets.deepslate_opal_ore": "Deepslate Opal Ore",
+  "block.rogueplanets.deepslate_amber_ore": "Deepslate Amber Ore",
+  "block.rogueplanets.deepslate_onyx_ore": "Deepslate Onyx Ore",
+  "block.rogueplanets.deepslate_pyrite_ore": "Deepslate Pyrite Ore",
+  "block.rogueplanets.deepslate_thallium_ore": "Deepslate Thallium Ore",
+  "block.rogueplanets.deepslate_quartzine_ore": "Deepslate Quartzine Ore",
+
+  "block.rogueplanets.ruby_ore": "Ruby Ore",
+  "block.rogueplanets.sapphire_ore": "Sapphire Ore",
+  "block.rogueplanets.topaz_ore": "Topaz Ore",
+  "block.rogueplanets.opal_ore": "Opal Ore",
+  "block.rogueplanets.amber_ore": "Amber Ore",
+  "block.rogueplanets.onyx_ore": "Onyx Ore",
+  "block.rogueplanets.pyrite_ore": "Pyrite Ore",
+  "block.rogueplanets.thallium_ore": "Thallium Ore",
+  "block.rogueplanets.quartzine_ore": "Quartzine Ore"
 }
