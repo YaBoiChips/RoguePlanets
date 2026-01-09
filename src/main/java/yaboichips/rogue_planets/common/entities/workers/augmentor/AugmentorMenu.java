@@ -63,10 +63,6 @@ public class AugmentorMenu extends AbstractContainerMenu {
         }
     }
 
-    public AugmentorMenu(int id, Inventory playerInventory) {
-        super(RPMenus.AUGMENTOR_MENU.get(), id);
-    }
-
     public AugmentorMenu(int i, Inventory inventory, FriendlyByteBuf friendlyByteBuf) {
         this(i, inventory, new SimpleContainer(36), new SimpleContainer(4));
     }
@@ -75,13 +71,6 @@ public class AugmentorMenu extends AbstractContainerMenu {
         ItemStack stack = augmentableSlot.getItem(0);
         container.addItem(stack);
     }
-    @Override
-    public void clicked(int slot, int p_150401_, ClickType clickType, Player p_150403_) {
-        if (slot >= 0) {
-            super.clicked(slot, p_150401_, clickType, p_150403_);
-        }
-    }
-
 
     private void onSlotChanged(Slot slot) {
         if (slot.getItem().getCapability(RogueCapabilities.AUGMENTABLE).isPresent()) {

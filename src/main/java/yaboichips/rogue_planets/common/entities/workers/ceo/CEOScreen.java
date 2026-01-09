@@ -13,13 +13,11 @@ import static yaboichips.rogue_planets.RoguePlanets.MODID;
 
 public class CEOScreen extends AbstractContainerScreen<CEOMenu> {
     private static final ResourceLocation TEXTURE = new ResourceLocation(MODID, "textures/gui/forge_master.png");
-    private final CEOMenu menu;
 
     public CEOScreen(CEOMenu menu, Inventory inventory, Component title) {
         super(menu, inventory, title);
         this.imageWidth = 256;
         this.imageHeight = 256;
-        this.menu = menu;
     }
 
     @Override

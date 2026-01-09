@@ -54,12 +54,6 @@ public class CEOMenu extends AbstractContainerMenu {
     }
 
     @Override
-    public void clicked(int slot, int p_150401_, ClickType clickType, Player p_150403_) {
-        if (slot >= 0) {
-            super.clicked(slot, p_150401_, clickType, p_150403_);
-        }
-    }
-    @Override
     public void removed(Player p_38940_) {
         if (container instanceof SimpleContainer simpleContainer) {
             simpleContainer.addItem(levelSlot.getItem(0));
@@ -67,8 +61,26 @@ public class CEOMenu extends AbstractContainerMenu {
         super.removed(p_38940_);
     }
     @Override
-    public ItemStack quickMoveStack(Player p_38941_, int p_38942_) {
-        return null;
+    public ItemStack quickMoveStack(Player player, int index) {
+        ItemStack itemstack = ItemStack.EMPTY;
+        Slot slot = this.slots.get(index);
+        if (slot.hasItem()) {
+            ItemStack itemstack1 = slot.getItem();
+            itemstack = itemstack1.copy();
+            if (index < 36) {
+                if (!this.moveItemStackTo(itemstack1, 36, this.slots.size(), true)) {
+                    return ItemStack.EMPTY;
+                }
+            } else if (!this.moveItemStackTo(itemstack1, 0, 36, false)) {
+                return ItemStack.EMPTY;
+            }
+            if (itemstack1.isEmpty()) {
+                slot.setByPlayer(ItemStack.EMPTY);
+            } else {
+                slot.setChanged();
+            }
+        }
+        return itemstack;
     }
     @Override
     public boolean stillValid(Player player) {

@@ -50,21 +50,9 @@ public class ForgeMasterMenu extends AbstractContainerMenu {
         }
     }
 
-    public ForgeMasterMenu(int id, Inventory playerInventory) {
-        super(RPMenus.FORGE_MASTER_MENU.get(), id);
-    }
-
     public ForgeMasterMenu(int i, Inventory inventory, FriendlyByteBuf friendlyByteBuf) {
         this(i, inventory, new SimpleContainer(36), new SimpleContainer(4));
     }
-
-    @Override
-    public void clicked(int slot, int p_150401_, ClickType clickType, Player p_150403_) {
-        if (slot >= 0) {
-            super.clicked(slot, p_150401_, clickType, p_150403_);
-        }
-    }
-
 
 
     @Override
@@ -76,8 +64,26 @@ public class ForgeMasterMenu extends AbstractContainerMenu {
     }
 
     @Override
-    public ItemStack quickMoveStack(Player p_38941_, int p_38942_) {
-        return null;
+    public ItemStack quickMoveStack(Player player, int index) {
+        ItemStack itemstack = ItemStack.EMPTY;
+        Slot slot = this.slots.get(index);
+        if (slot.hasItem()) {
+            ItemStack itemstack1 = slot.getItem();
+            itemstack = itemstack1.copy();
+            if (index < 36) {
+                if (!this.moveItemStackTo(itemstack1, 36, this.slots.size(), true)) {
+                    return ItemStack.EMPTY;
+                }
+            } else if (!this.moveItemStackTo(itemstack1, 0, 36, false)) {
+                return ItemStack.EMPTY;
+            }
+            if (itemstack1.isEmpty()) {
+                slot.setByPlayer(ItemStack.EMPTY);
+            } else {
+                slot.setChanged();
+            }
+        }
+        return itemstack;
     }
 
     @Override

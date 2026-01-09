@@ -71,34 +71,6 @@ public class RPItems {
     public static final RegistryObject<Item> AZURIUM = ITEMS.register("azurium", Azurium::new);
 
 
-
-    public static final RegistryObject<Item> AZURIUM_BLOCK = ITEMS.register("azurium_block", ()-> new BlockItem(RPBlocks.AZURIUM_BLOCK.get(), new Item.Properties()));
-    public static final RegistryObject<Item> PYROLITH_BLOCK = ITEMS.register("pyrolith_block", ()-> new BlockItem(RPBlocks.PYROLITH_BLOCK.get(), new Item.Properties()));
-    public static final RegistryObject<Item> ELECTRYTE_BLOCK = ITEMS.register("electryte_block", ()-> new BlockItem(RPBlocks.ELECTRYTE_BLOCK.get(), new Item.Properties()));
-    public static final RegistryObject<Item> CHLOROSYNTH_BLOCK = ITEMS.register("chlorosynth_block", ()-> new BlockItem(RPBlocks.CHLOROSYNTH_BLOCK.get(), new Item.Properties()));
-
-    public static final RegistryObject<Item> DEEPSLATE_RUBY_ORE = ITEMS.register("deepslate_ruby_ore", ()-> new BlockItem(RPBlocks.DEEPSLATE_RUBY_ORE.get(), new Item.Properties()));
-    public static final RegistryObject<Item> DEEPSLATE_SAPPHIRE_ORE = ITEMS.register("deepslate_sapphire_ore", ()-> new BlockItem(RPBlocks.DEEPSLATE_SAPPHIRE_ORE.get(), new Item.Properties()));
-    public static final RegistryObject<Item> DEEPSLATE_TOPAZ_ORE = ITEMS.register("deepslate_topaz_ore", ()-> new BlockItem(RPBlocks.DEEPSLATE_TOPAZ_ORE.get(), new Item.Properties()));
-    public static final RegistryObject<Item> DEEPSLATE_OPAL_ORE = ITEMS.register("deepslate_opal_ore", ()-> new BlockItem(RPBlocks.DEEPSLATE_OPAL_ORE.get(), new Item.Properties()));
-    public static final RegistryObject<Item> DEEPSLATE_AMBER_ORE = ITEMS.register("deepslate_amber_ore", ()-> new BlockItem(RPBlocks.DEEPSLATE_AMBER_ORE.get(), new Item.Properties()));
-    public static final RegistryObject<Item> DEEPSLATE_ONYX_ORE = ITEMS.register("deepslate_onyx_ore", ()-> new BlockItem(RPBlocks.DEEPSLATE_ONYX_ORE.get(), new Item.Properties()));
-    public static final RegistryObject<Item> DEEPSLATE_PYRITE_ORE = ITEMS.register("deepslate_pyrite_ore", ()-> new BlockItem(RPBlocks.DEEPSLATE_PYRITE_ORE.get(), new Item.Properties()));
-    public static final RegistryObject<Item> DEEPSLATE_THALLIUM_ORE = ITEMS.register("deepslate_thallium_ore", ()-> new BlockItem(RPBlocks.DEEPSLATE_THALLIUM_ORE.get(), new Item.Properties()));
-    public static final RegistryObject<Item> DEEPSLATE_QUARTZINE_ORE = ITEMS.register("deepslate_quartzine_ore", ()-> new BlockItem(RPBlocks.DEEPSLATE_QUARTZINE_ORE.get(), new Item.Properties()));
-
-    public static final RegistryObject<Item> RUBY_ORE = ITEMS.register("ruby_ore", ()-> new BlockItem(RPBlocks.RUBY_ORE.get(), new Item.Properties()));
-    public static final RegistryObject<Item> SAPPHIRE_ORE = ITEMS.register("sapphire_ore", ()-> new BlockItem(RPBlocks.SAPPHIRE_ORE.get(), new Item.Properties()));
-    public static final RegistryObject<Item> TOPAZ_ORE = ITEMS.register("topaz_ore", ()-> new BlockItem(RPBlocks.TOPAZ_ORE.get(), new Item.Properties()));
-    public static final RegistryObject<Item> OPAL_ORE = ITEMS.register("opal_ore", ()-> new BlockItem(RPBlocks.OPAL_ORE.get(), new Item.Properties()));
-    public static final RegistryObject<Item> AMBER_ORE = ITEMS.register("amber_ore", ()-> new BlockItem(RPBlocks.AMBER_ORE.get(), new Item.Properties()));
-    public static final RegistryObject<Item> ONYX_ORE = ITEMS.register("onyx_ore", ()-> new BlockItem(RPBlocks.ONYX_ORE.get(), new Item.Properties()));
-    public static final RegistryObject<Item> PYRITE_ORE = ITEMS.register("pyrite_ore", ()-> new BlockItem(RPBlocks.PYRITE_ORE.get(), new Item.Properties()));
-    public static final RegistryObject<Item> THALLIUM_ORE = ITEMS.register("thallium_ore", ()-> new BlockItem(RPBlocks.THALLIUM_ORE.get(), new Item.Properties()));
-    public static final RegistryObject<Item> QUARTZINE_ORE = ITEMS.register("quartzine_ore", ()-> new BlockItem(RPBlocks.QUARTZINE_ORE.get(), new Item.Properties()));
-
-    public static final RegistryObject<Item> TP = ITEMS.register("tp", ()-> new BlockItem(RPBlocks.TP.get(), new Item.Properties()));
-
     public static final RegistryObject<CreativeModeTab> EXAMPLE_TAB = CREATIVE_MODE_TABS.register("rp_tab", () -> CreativeModeTab.builder()
             .withTabsBefore(CreativeModeTabs.COMBAT)
             .title(Component.literal("Rouge Planets"))

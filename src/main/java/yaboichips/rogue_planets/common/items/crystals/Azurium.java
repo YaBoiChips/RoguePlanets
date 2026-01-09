@@ -19,7 +19,7 @@ public class Azurium extends Item {
     public @NotNull InteractionResultHolder<ItemStack> use(@NotNull Level level, @NotNull Player player, @NotNull InteractionHand hand) {
         ItemStack stack = player.getItemInHand(hand);
         player.getCapability(RogueCapabilities.PLAYER_DATA).ifPresent(playerData -> {
-            playerData.setAzuriumTimer(30 * 20);
+//            playerData.setAzuriumTimer(30 * 20); MAKE A POTION EFFECT!
             playerData.addO2(30 * 20);
         });
         player.getCooldowns().addCooldown(stack.getItem(), 30);

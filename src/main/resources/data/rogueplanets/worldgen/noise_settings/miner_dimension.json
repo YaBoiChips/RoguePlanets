@@ -132,7 +132,7 @@
         "then_run": {
           "type": "minecraft:block",
           "result_state": {
-            "Name": "minecraft:stone"
+            "Name": "rogueplanets:voidstone"
           }
         }
       },
@@ -149,7 +149,7 @@
         "then_run": {
           "type": "minecraft:block",
           "result_state": {
-            "Name": "minecraft:deepslate",
+            "Name": "rogueplanets:voidstone",
             "Properties": {
               "axis": "x"
             }

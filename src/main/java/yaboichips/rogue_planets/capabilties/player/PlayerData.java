@@ -114,10 +114,6 @@ public class PlayerData {
         tag.putBoolean("Initiated", getIsInitiated());
         tag.putInt("Credits", getCredits());
         tag.putInt("O2", getCredits());
-        tag.putInt("PyrolithTimer", getPyrolithTimer());
-        tag.putInt("AzuriumTimer", getAzuriumTimer());
-        tag.putInt("ElectryteTimer", getElectryteTimer());
-        tag.putInt("ChlorosynthTimer", getChlorosynthTimer());
     }
 
 
@@ -140,66 +136,6 @@ public class PlayerData {
         if (tag.contains("O2")) {
             this.setO2(tag.getInt("O2"));
         }
-        if (tag.contains("PyrolithTimer")) {
-            this.setPyrolithTimer(tag.getInt("PyrolithTimer"));
-        }
-        if (tag.contains("ChlorosynthTimer")) {
-            this.setChlorosynthTimer(tag.getInt("ChlorosynthTimer"));
-        }
-        if (tag.contains("AzuriumTimer")) {
-            this.setAzuriumTimer(tag.getInt("AzuriumTimer"));
-        }
-        if (tag.contains("ElectryteTimer")) {
-            this.setElectryteTimer(tag.getInt("ElectryteTimer"));
-        }
-    }
-
-    public boolean isPyrolithActive() {
-        return getPyrolithTimer() > 0;
-    }
-
-    public boolean isAzuriumActive() {
-        return getAzuriumTimer() > 0;
-    }
-
-    public boolean isElectryteActive() {
-        return getElectryteTimer() > 0;
-    }
-
-    public boolean isChlorosynthActive() {
-        return getChlorosynthTimer() > 1;
-    }
-
-    public int getPyrolithTimer() {
-        return pyrolithTimer;
-    }
-
-    public void setPyrolithTimer(int pyrolithTimer) {
-        this.pyrolithTimer = pyrolithTimer;
-    }
-
-    public int getAzuriumTimer() {
-        return azuriumTimer;
-    }
-
-    public void setAzuriumTimer(int azuriumTimer) {
-        this.azuriumTimer = azuriumTimer;
-    }
-
-    public int getElectryteTimer() {
-        return electryteTimer;
-    }
-
-    public void setElectryteTimer(int electryteTimer) {
-        this.electryteTimer = electryteTimer;
-    }
-
-    public int getChlorosynthTimer() {
-        return chlorosynthTimer;
-    }
-
-    public void setChlorosynthTimer(int chlorosynthTimer) {
-        this.chlorosynthTimer = chlorosynthTimer;
     }
 
     public void fromTag(ListTag p_40108_, Container container) {

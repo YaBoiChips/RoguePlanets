@@ -31,7 +31,7 @@ public class Pyrolith extends Item {
     public @NotNull InteractionResultHolder<ItemStack> use(@NotNull Level level, @NotNull Player player, @NotNull InteractionHand hand) {
         ItemStack stack = player.getItemInHand(hand);
         player.getCapability(RogueCapabilities.PLAYER_DATA).ifPresent(playerData -> {
-            playerData.setPyrolithTimer(30 * 20);
+//            playerData.setPyrolithTimer(30 * 20); MAKE A POTION EFFECT!
         });
         for (int step = 1; step <= STEPS; step++) {
             double radius = (MAX_RADIUS / STEPS) * step;

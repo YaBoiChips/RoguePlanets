@@ -29,7 +29,7 @@ public class MerchantScreen extends AbstractContainerScreen<MerchantMenu> {
     protected void init() {
         super.init();
         this.clearWidgets();
-        Button sellButton = Button.builder(Component.literal("Buy Item"), btn -> RoguePackets.CHANNEL.sendToServer(new SellItemPacket())).pos(leftPos + 143, topPos + 76).size(50,20).build();
+        Button sellButton = Button.builder(Component.literal("Sell"), btn -> RoguePackets.CHANNEL.sendToServer(new SellItemPacket())).pos(leftPos + 143, topPos + 76).size(50,20).build();
         this.addRenderableWidget(sellButton);
         for (int i = 0; i < MerchantSales.SALES.size(); i++) {
             MerchantSales sale = MerchantSales.SALES.get(i);

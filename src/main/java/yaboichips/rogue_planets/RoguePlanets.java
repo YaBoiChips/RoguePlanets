@@ -222,12 +222,13 @@ public class RoguePlanets {
     @SubscribeEvent
     public void onPlayerAttack(AttackEntityEvent event) {
         event.getEntity().getCapability(RogueCapabilities.PLAYER_DATA).ifPresent(playerData -> {
-            if (playerData.isPyrolithActive()) {
-                event.getTarget().setSecondsOnFire(30);
-            }
-            if (playerData.isAzuriumActive()) {
-                ((LivingEntity) event.getTarget()).addEffect(new MobEffectInstance(MobEffects.LEVITATION, 200, 1));
-            }
+            //replace with potion effect
+//            if (playerData.isPyrolithActive()) {
+//                event.getTarget().setSecondsOnFire(30);
+//            }
+//            if (playerData.isAzuriumActive()) {
+//                ((LivingEntity) event.getTarget()).addEffect(new MobEffectInstance(MobEffects.LEVITATION, 200, 1));
+//            }
         });
     }
 
@@ -247,20 +248,6 @@ public class RoguePlanets {
         if (event.side.isClient()) return;
         ServerPlayer player = (ServerPlayer) event.player;
         RoguePackets.sendToPlayer(new SendPlayerDataPacket(PlayerDataUtils.getO2(player), PlayerDataUtils.getCredits(player)), player);
-        event.player.getCapability(RogueCapabilities.PLAYER_DATA).ifPresent(playerData -> {
-            if (playerData.getAzuriumTimer() > 0) {
-                playerData.setAzuriumTimer(playerData.getAzuriumTimer() - 1);
-            }
-            if (playerData.getPyrolithTimer() > 0) {
-                playerData.setPyrolithTimer(playerData.getPyrolithTimer() - 1);
-            }
-            if (playerData.getElectryteTimer() > 0) {
-                playerData.setElectryteTimer(playerData.getElectryteTimer() - 1);
-            }
-            if (playerData.getChlorosynthTimer() > 0) {
-                playerData.setChlorosynthTimer(playerData.getChlorosynthTimer() - 1);
-            }
-        });
         if (player.serverLevel().dimension().location().getNamespace().equals("rogueplanets")) {
             PlayerDataUtils.subO2(player, 1);
             if (PlayerDataUtils.getO2(player) <= 0){
