@@ -9,6 +9,7 @@ import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.levelgen.feature.Feature;
 import net.minecraft.world.level.levelgen.feature.FeaturePlaceContext;
 import net.minecraft.world.level.levelgen.feature.configurations.NoneFeatureConfiguration;
+import yaboichips.rogue_planets.core.RPBlocks;
 
 public class BeegStoneSpike extends Feature<NoneFeatureConfiguration> {
     public BeegStoneSpike(Codec<NoneFeatureConfiguration> codec) {
@@ -58,9 +59,9 @@ public class BeegStoneSpike extends Feature<NoneFeatureConfiguration> {
                         BlockPos pos = BlockPos.containing(x + xOffset, y + i, z + zOffset);
                         if (level.getBlockState(pos).isAir() && level.isAreaLoaded(pos, 4)) {
                             if (random.nextFloat() < 0.7f) {
-                                level.setBlock(pos, Blocks.STONE.defaultBlockState(), 2);
+                                level.setBlock(pos, RPBlocks.VOIDSTONE.get().defaultBlockState(), 2);
                             } else {
-                                level.setBlock(pos, Blocks.COBBLESTONE.defaultBlockState(), 2);
+                                level.setBlock(pos, RPBlocks.MOSSY_VOIDSTONE.get().defaultBlockState(), 2);
                             }
                         }
                     }

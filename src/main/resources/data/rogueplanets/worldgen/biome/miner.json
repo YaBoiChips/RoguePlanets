@@ -38,7 +38,8 @@
       "rogueplanets:topaz_ore",
       "rogueplanets:quartzine_ore",
       "rogueplanets:beeg_spike",
-      "rogueplanets:angled_arch"
+      "rogueplanets:angled_arch",
+      "rogueplanets:voidstone_stalagmites"
     ]
   ],
   "has_precipitation": false,

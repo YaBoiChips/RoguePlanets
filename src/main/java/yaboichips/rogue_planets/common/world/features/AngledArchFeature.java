@@ -9,6 +9,7 @@ import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.levelgen.feature.Feature;
 import net.minecraft.world.level.levelgen.feature.FeaturePlaceContext;
 import net.minecraft.world.level.levelgen.feature.configurations.NoneFeatureConfiguration;
+import yaboichips.rogue_planets.core.RPBlocks;
 
 public class AngledArchFeature extends Feature<NoneFeatureConfiguration> {
     public AngledArchFeature(Codec<NoneFeatureConfiguration> codec) {
@@ -60,8 +61,8 @@ public class AngledArchFeature extends Feature<NoneFeatureConfiguration> {
                             if (level.getBlockState(pos).isAir()) {
                                 level.setBlock(pos,
                                         random.nextFloat() < 0.7f
-                                                ? Blocks.STONE.defaultBlockState()
-                                                : Blocks.COBBLESTONE.defaultBlockState(),
+                                                ? RPBlocks.VOIDSTONE.get().defaultBlockState()
+                                                : RPBlocks.MOSSY_VOIDSTONE.get().defaultBlockState(),
                                         2
                                 );
                             }

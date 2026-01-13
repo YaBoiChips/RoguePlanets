@@ -33,6 +33,8 @@ public class RPBlocks {
 
 
     public static final RegistryObject<Block> VOIDSTONE = registerBlock("voidstone", RPBlocks::createStone);
+    public static final RegistryObject<Block> MOSSY_VOIDSTONE = registerBlock("mossy_voidstone", RPBlocks::createStone);
+
     public static final RegistryObject<Block> VOIDSTONE_SPIKE_MIDDLE = registerBlock("voidstone_spike_middle", RPBlocks::createStoneSpikeM);
     public static final RegistryObject<Block> VOIDSTONE_SPIKE_TOP = registerBlock("voidstone_spike_top", RPBlocks::createStoneSpikeT);
 
