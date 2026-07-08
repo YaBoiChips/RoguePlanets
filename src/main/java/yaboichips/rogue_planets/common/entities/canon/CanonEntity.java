@@ -26,7 +26,9 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.chunk.ChunkGenerator;
 import net.minecraft.world.level.dimension.DimensionType;
@@ -145,19 +147,8 @@ public class CanonEntity extends Entity implements GeoEntity {
                 loadPlanetInventory(serverPlayer, PlayerDataUtils.getPlanetContainer(serverPlayer));
                 PlayerDataUtils.setO2(serverPlayer, 19000);
                 serverPlayer.teleportTo(world, serverPlayer.getX(), 145, serverPlayer.getZ(), 0, 0);
-                serverPlayer.addEffect(new MobEffectInstance(MobEffects.SLOW_FALLING, 120));
-
-                CanonEntity canon = RPEntities.CANON.get().create(world);
-                Vec3 canonPos = new BlockPos(serverPlayer.blockPosition().getX(), 124, serverPlayer.blockPosition().getZ()).getCenter().add(0, -.5, 0);
-                canon.setPos(canonPos);
-                for (int x = serverPlayer.blockPosition().getX() - 1; x <= serverPlayer.blockPosition().getX() + 1; x++) {
-                    for (int z = serverPlayer.blockPosition().getZ() - 1; z <= serverPlayer.blockPosition().getZ() + 1; z++) {
-                        BlockPos platformPos = new BlockPos(x, 123, z);
-                        world.setBlockAndUpdate(platformPos, Blocks.SMOOTH_STONE.defaultBlockState());
-                    }
-                }
-                canon.setGlowingTag(true);
-                world.addFreshEntity(canon);
+                serverPlayer.addEffect(new MobEffectInstance(MobEffects.SLOW_FALLING, 140));
+                createCanon(world, serverPlayer.blockPosition().getX(), serverPlayer.blockPosition().getZ(), serverPlayer);
             }
         } else {
             serverPlayer.teleportTo(serverPlayer.getServer().getLevel(Level.OVERWORLD), serverPlayer.getX(), serverPlayer.getY(), serverPlayer.getZ(), 0, 0);
@@ -165,6 +156,47 @@ public class CanonEntity extends Entity implements GeoEntity {
             loadOverworldInventory(serverPlayer, PlayerDataUtils.getSavedInventory(serverPlayer));
             serverPlayer.addEffect(new MobEffectInstance(MobEffects.SLOW_FALLING, 420));
             RoguePlanets.scheduleTask(419, () -> checkToAddSlowFalling(serverPlayer));
+        }
+    }
+
+    public static void createCanon(ServerLevel level, int x, int z, ServerPlayer player) {
+        int foundY = Integer.MIN_VALUE;
+        for (int y = 150; y > level.getMinBuildHeight(); y--) {
+            BlockPos pos = new BlockPos(x, y, z);
+            if (!level.getBlockState(pos).isAir()) {
+                foundY = y;
+                break;
+            }
+        }
+        if (foundY == Integer.MIN_VALUE) return;
+
+        BlockPos platformY = new BlockPos(x, foundY, z);
+        for (int dx = -1; dx <= 1; dx++) {
+            for (int dz = -1; dz <= 1; dz++) {
+                level.setBlock(platformY.offset(dx, 0, dz), Blocks.SMOOTH_STONE.defaultBlockState(), Block.UPDATE_ALL);
+            }
+        }
+        CanonEntity canon = RPEntities.CANON.get().create(level);
+        if (canon == null) return;
+        canon.moveTo(x + 0.5, foundY + 1, z + 0.5, 0f, 0f);
+        canon.setGlowingTag(true);
+        level.addFreshEntity(canon);
+
+        player.getInventory().items.replaceAll(stack -> stack.is(Items.COMPASS) ? ItemStack.EMPTY : stack);
+        player.getInventory().offhand.replaceAll(stack -> stack.is(Items.COMPASS) ? ItemStack.EMPTY : stack);
+
+        ItemStack compass = new ItemStack(Items.COMPASS);
+        CompoundTag nbt = compass.getOrCreateTag();
+        nbt.putBoolean("LodestoneTracked", false); // no actual lodestone block needed
+        nbt.putString("LodestoneDimension", level.dimension().location().toString());
+        CompoundTag lodestonePos = new CompoundTag();
+        lodestonePos.putInt("X", x);
+        lodestonePos.putInt("Y", foundY);
+        lodestonePos.putInt("Z", z);
+        nbt.put("LodestonePos", lodestonePos);
+
+        if (!player.getInventory().add(compass)) {
+            player.drop(compass, false);
         }
     }
 

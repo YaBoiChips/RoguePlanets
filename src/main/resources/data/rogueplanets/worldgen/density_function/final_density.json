@@ -1,0 +1,30 @@
+{
+  "type": "minecraft:add",
+  "argument1": {
+    "type": "minecraft:add",
+    "argument1": {
+      "type": "minecraft:y_clamped_gradient",
+      "from_y": -45,
+      "to_y": 230,
+      "from_value": 1.35,
+      "to_value": -1
+    },
+    "argument2": {
+      "type": "minecraft:mul",
+      "argument1": {
+        "type": "minecraft:noise",
+        "noise": "rogueplanets:surface_height",
+        "xz_scale": 0.8,
+        "y_scale": 0
+      },
+      "argument2": {
+        "type": "minecraft:constant",
+        "argument": 0.35
+      }
+    }
+  },
+  "argument2": {
+    "type": "minecraft:constant",
+    "argument": 0
+  }
+}

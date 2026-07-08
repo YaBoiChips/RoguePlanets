@@ -34,6 +34,7 @@ public class RPBlocks {
 
     public static final RegistryObject<Block> VOIDSTONE = registerBlock("voidstone", RPBlocks::createStone);
     public static final RegistryObject<Block> MOSSY_VOIDSTONE = registerBlock("mossy_voidstone", RPBlocks::createStone);
+    public static final RegistryObject<Block> COBBLED_VOIDSTONE = registerBlock("cobbled_voidstone", RPBlocks::createCobblestone);
 
     public static final RegistryObject<Block> VOIDSTONE_SPIKE_MIDDLE = registerBlock("voidstone_spike_middle", RPBlocks::createStoneSpikeM);
     public static final RegistryObject<Block> VOIDSTONE_SPIKE_TOP = registerBlock("voidstone_spike_top", RPBlocks::createStoneSpikeT);
@@ -70,6 +71,9 @@ public class RPBlocks {
     }
     public static Block createStone() {
         return new Block(BlockBehaviour.Properties.copy(Blocks.STONE));
+    }
+    public static Block createCobblestone() {
+        return new Block(BlockBehaviour.Properties.copy(Blocks.COBBLESTONE));
     }
     public static Block createStoneSpikeM() {
         return new SpikeMiddle(BlockBehaviour.Properties.copy(Blocks.STONE));

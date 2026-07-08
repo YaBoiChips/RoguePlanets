@@ -2,10 +2,10 @@
   "type": "rogueplanets:miner",
   "generator": {
     "type": "minecraft:noise",
-    "settings": "rogueplanets:miner_dimension",
+    "settings": "rogueplanets:voidstone_caves",
     "biome_source": {
       "type": "minecraft:fixed",
-      "biome": "rogueplanets:miner"
+      "biome": "rogueplanets:voidstone_caves"
     }
   }
 }

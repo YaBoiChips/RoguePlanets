@@ -4,12 +4,13 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.entity.player.Player;
 import net.minecraftforge.network.NetworkEvent;
+import yaboichips.rogue_planets.client.ClientPacketHandler;
 import yaboichips.rogue_planets.client.screens.PlaneteerInfoScreen;
 
 import java.util.function.Supplier;
 
 public class OpenPlaneteerGUIPacket {
-    private final int credits;
+    public final int credits;
 //    private final int xp;
 //    private final int level;
     public OpenPlaneteerGUIPacket(int credits) {
@@ -34,12 +35,8 @@ public class OpenPlaneteerGUIPacket {
     public static void handle(OpenPlaneteerGUIPacket packet, Supplier<NetworkEvent.Context> contextSupplier) {
         NetworkEvent.Context context = contextSupplier.get();
         context.enqueueWork(() -> {
-            // This code runs on the client side
-            Minecraft mc = Minecraft.getInstance();
-            Player player = mc.player;
-            if (player != null) {
-                // Open the GUI
-                mc.setScreen(new PlaneteerInfoScreen(packet.credits));
+            if (context.getDirection().getReceptionSide().isClient()) {
+                ClientPacketHandler.handle(packet);
             }
         });
         context.setPacketHandled(true);

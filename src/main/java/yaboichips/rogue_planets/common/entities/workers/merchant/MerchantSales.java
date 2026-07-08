@@ -10,9 +10,10 @@ public record MerchantSales(ItemStack item, int price) {
 
     public static final List<MerchantSales> SALES = new ArrayList<>();
 
-    public static final MerchantSales ROPE = register(new MerchantSales(RPItems.ROPE.get().getDefaultInstance(), 5));
+    public static final MerchantSales PICKAXE = register(new MerchantSales(RPItems.PLANETEER_PICKAXE.get().getDefaultInstance(), 0));
+    public static final MerchantSales ROPE = register(new MerchantSales(RPItems.ROPE.get().getDefaultInstance(), 2));
+    public static final MerchantSales SPACE_TORCH = register(new MerchantSales(RPItems.SPACE_TORCH.get().getDefaultInstance(), 2));
     public static final MerchantSales JERKY = register(new MerchantSales(RPItems.JERKY.get().getDefaultInstance(), 3));
-    public static final MerchantSales SPACE_TORCH = register(new MerchantSales(RPItems.SPACE_TORCH.get().getDefaultInstance(), 3));
     public static final MerchantSales MAGAZINE = register(new MerchantSales(RPItems.MAGAZINE.get().getDefaultInstance(), 10));
 
 

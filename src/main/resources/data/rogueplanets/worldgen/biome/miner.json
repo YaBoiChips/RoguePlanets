@@ -1,11 +1,5 @@
 {
   "carvers": {
-    "air": [
-      "minecraft:cave",
-      "minecraft:cave_extra_underground",
-      "minecraft:canyon",
-      "minecraft:nether_cave"
-    ]
   },
   "downfall": 0.0,
   "effects": {
@@ -23,7 +17,7 @@
       "sound": "minecraft:music.overworld.dripstone_caves"
     },
     "sky_color": 7907327,
-    "water_color": 4159204,
+    "water_color": 12851903,
     "water_fog_color": 329011
   },
   "features": [
@@ -39,7 +33,10 @@
       "rogueplanets:quartzine_ore",
       "rogueplanets:beeg_spike",
       "rogueplanets:angled_arch",
-      "rogueplanets:voidstone_stalagmites"
+      "rogueplanets:voidstone_stalagmites",
+      "rogueplanets:voidstone_blobs",
+      "rogueplanets:cobbled_voidstone"
+
     ]
   ],
   "has_precipitation": false,

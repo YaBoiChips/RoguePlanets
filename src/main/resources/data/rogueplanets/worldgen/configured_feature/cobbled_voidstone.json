@@ -1,0 +1,18 @@
+{
+  "type": "minecraft:ore",
+  "config": {
+    "discard_chance_on_air_exposure": 0,
+    "size": 61,
+    "targets": [
+      {
+        "state": {
+          "Name": "rogueplanets:cobbled_voidstone"
+        },
+        "target": {
+          "predicate_type": "minecraft:block_match",
+          "block": "rogueplanets:voidstone"
+        }
+      }
+    ]
+  }
+}

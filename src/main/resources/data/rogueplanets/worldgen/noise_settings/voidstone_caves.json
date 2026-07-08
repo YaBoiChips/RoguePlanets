@@ -1,0 +1,48 @@
+{
+  "sea_level": -64,
+  "disable_mob_generation": false,
+  "ore_veins_enabled": false,
+  "aquifers_enabled": false,
+  "legacy_random_source": false,
+  "default_block": {
+    "Name": "rogueplanets:voidstone"
+  },
+  "default_fluid": {
+    "Name": "minecraft:air"
+  },
+  "spawn_target": [],
+  "noise": {
+    "min_y": -64,
+    "height": 384,
+    "size_horizontal": 1,
+    "size_vertical": 2
+  },
+  "surface_rule": {
+    "type": "minecraft:sequence",
+    "sequence": [
+      {
+        "type": "minecraft:block",
+        "result_state": {
+          "Name": "rogueplanets:voidstone"
+        }
+      }
+    ]
+  },
+  "noise_router": {
+    "barrier": "rogueplanets:barrier",
+    "fluid_level_floodedness": "rogueplanets:fluid_level_floodedness",
+    "fluid_level_spread": "rogueplanets:fluid_level_spread",
+    "lava": "rogueplanets:lava",
+    "temperature": "rogueplanets:temperature",
+    "vegetation": "rogueplanets:vegetation",
+    "continents": "rogueplanets:continents",
+    "erosion": "rogueplanets:erosion",
+    "depth": "rogueplanets:depth",
+    "ridges": "rogueplanets:ridges",
+    "initial_density_without_jaggedness": "rogueplanets:initial_density_without_jaggedness",
+    "final_density": "rogueplanets:final_density",
+    "vein_toggle": "rogueplanets:vein_toggle",
+    "vein_ridged": "rogueplanets:vein_ridged",
+    "vein_gap": "rogueplanets:vein_gap"
+  }
+}

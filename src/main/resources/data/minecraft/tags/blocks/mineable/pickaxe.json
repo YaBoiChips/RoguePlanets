@@ -18,6 +18,9 @@
     "rogueplanets:topaz_ore",
     "rogueplanets:deepslate_topaz_ore",
     "rogueplanets:quartzine_ore",
-    "rogueplanets:deepslate_quartzine_ore"
+    "rogueplanets:deepslate_quartzine_ore",
+    "rogueplanets:voidstone",
+    "rogueplanets:cobbled_voidstone",
+    "rogueplanets:mossy_voidstone"
   ]
 }

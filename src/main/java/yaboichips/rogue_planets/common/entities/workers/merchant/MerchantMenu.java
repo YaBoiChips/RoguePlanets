@@ -13,7 +13,11 @@ import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import yaboichips.rogue_planets.capabilties.player.PlayerDataUtils;
+import yaboichips.rogue_planets.core.RPItems;
 import yaboichips.rogue_planets.core.RPMenus;
+
+import java.util.Set;
+import java.util.function.Predicate;
 
 public class MerchantMenu extends AbstractContainerMenu {
 
@@ -89,8 +93,18 @@ public class MerchantMenu extends AbstractContainerMenu {
     public void purchaseItem(ItemStack stack, int price) {
         if (!player.level().isClientSide()) {
             if (PlayerDataUtils.getCredits((ServerPlayer) player) >= price) {
-                this.container.addItem(stack);
-                PlayerDataUtils.subCredits((ServerPlayer) player, price);
+                if (stack.is(RPItems.PLANETEER_PICKAXE.get())) {
+                    if (container.hasAnyOf(Set.of(stack.getItem()))){
+                        player.sendSystemMessage(Component.literal("You already have a pickaxe"));
+                    }
+                    else {
+                        player.sendSystemMessage(Component.literal("Don't Lose this one u BOZO"));
+                        this.container.addItem(stack);
+                    }
+                } else {
+                    this.container.addItem(stack);
+                    PlayerDataUtils.subCredits((ServerPlayer) player, price);
+                }
             }
         } else {
             player.sendSystemMessage(Component.literal("You need " + (price - PlayerDataUtils.getCredits((ServerPlayer) player)) + " more Credits"));

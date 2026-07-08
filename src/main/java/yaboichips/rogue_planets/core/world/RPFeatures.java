@@ -3,7 +3,9 @@ package yaboichips.rogue_planets.core.world;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.world.level.levelgen.feature.Feature;
 import net.minecraft.world.level.levelgen.feature.ReplaceBlobsFeature;
+import net.minecraft.world.level.levelgen.feature.ReplaceBlockFeature;
 import net.minecraft.world.level.levelgen.feature.configurations.NoneFeatureConfiguration;
+import net.minecraft.world.level.levelgen.feature.configurations.ReplaceBlockConfiguration;
 import net.minecraft.world.level.levelgen.feature.configurations.ReplaceSphereConfiguration;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.RegistryObject;
@@ -19,6 +21,6 @@ public class RPFeatures {
     public static final RegistryObject<Feature<NoneFeatureConfiguration>> BEEG_SPIKE = FEATURES.register("beeg_spike", () -> new BeegStoneSpike(NoneFeatureConfiguration.CODEC));
     public static final RegistryObject<Feature<NoneFeatureConfiguration>> ANGLED_ARCH = FEATURES.register("angled_arch", () -> new AngledArchFeature(NoneFeatureConfiguration.CODEC));
     public static final RegistryObject<Feature<NoneFeatureConfiguration>> VOIDSTONE_STALAGMITES = FEATURES.register("voidstone_stalagmites", () -> new VoidstoneSpikeFeature(NoneFeatureConfiguration.CODEC));
-//    public static final RegistryObject<Feature<ReplaceSphereConfiguration>> MOSSY_VOIDSTONE_BLOBS = FEATURES.register("mossy_voidstone_blobs", () -> new ReplaceBlobsFeature(ReplaceSphereConfiguration.CODEC));
+//    public static final RegistryObject<Feature<ReplaceBlockConfiguration>> MOSSY_VOIDSTONE_BLOBS = FEATURES.register("voidstone_blobs", () -> new ReplaceBlockFeature(ReplaceBlockConfiguration.CODEC));
 
 }

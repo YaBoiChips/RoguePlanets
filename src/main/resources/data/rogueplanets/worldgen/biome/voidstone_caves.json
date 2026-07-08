@@ -1,0 +1,41 @@
+{
+  "has_precipitation": false,
+  "temperature": 0.5,
+  "temperature_modifier": "none",
+  "downfall": 0,
+  "effects": {
+    "sky_color": 0,
+    "fog_color": 3289650,
+    "water_color": 4159204,
+    "water_fog_color": 329011
+  },
+  "carvers": {
+    "air": [
+      "rogueplanets:voidstone_cave",
+      "rogueplanets:voidstone_cave_entrance",
+      "minecraft:cave",
+      "minecraft:cave_extra_underground"
+    ]
+  },
+  "features": [
+    [
+      "rogueplanets:ruby_ore",
+      "rogueplanets:sapphire_ore",
+      "rogueplanets:amber_ore",
+      "rogueplanets:onyx_ore",
+      "rogueplanets:opal_ore",
+      "rogueplanets:pyrite_ore",
+      "rogueplanets:thallium_ore",
+      "rogueplanets:topaz_ore",
+      "rogueplanets:quartzine_ore",
+      "rogueplanets:beeg_spike",
+      "rogueplanets:angled_arch",
+      "rogueplanets:voidstone_stalagmites",
+      "rogueplanets:voidstone_blobs",
+      "rogueplanets:cobbled_voidstone"
+
+    ]
+  ],
+  "spawners": {},
+  "spawn_costs": {}
+}

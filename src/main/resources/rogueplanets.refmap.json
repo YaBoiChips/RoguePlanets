@@ -1,0 +1,22 @@
+{
+  "mappings": {
+    "yaboichips/rogue_planets/mixin/AbstractContainerScreenMixin": {
+      "Lnet/minecraft/client/gui/screens/inventory/AbstractContainerScreen;keyPressed(III)Z": "Lnet/minecraft/client/gui/screens/inventory/AbstractContainerScreen;m_7933_(III)Z",
+      "Lnet/minecraft/client/gui/screens/inventory/AbstractContainerScreen;hasClickedOutside(DDIII)Z": "Lnet/minecraft/client/gui/screens/inventory/AbstractContainerScreen;m_7467_(DDIII)Z"
+    },
+    "yaboichips/rogue_planets/mixin/LevelRendererMixin": {
+      "renderSky(Lcom/mojang/blaze3d/vertex/PoseStack;Lorg/joml/Matrix4f;FLnet/minecraft/client/Camera;ZLjava/lang/Runnable;)V": "Lnet/minecraft/client/renderer/LevelRenderer;m_202423_(Lcom/mojang/blaze3d/vertex/PoseStack;Lorg/joml/Matrix4f;FLnet/minecraft/client/Camera;ZLjava/lang/Runnable;)V"
+    }
+  },
+  "data": {
+    "searge": {
+      "yaboichips/rogue_planets/mixin/AbstractContainerScreenMixin": {
+        "Lnet/minecraft/client/gui/screens/inventory/AbstractContainerScreen;keyPressed(III)Z": "Lnet/minecraft/client/gui/screens/inventory/AbstractContainerScreen;m_7933_(III)Z",
+        "Lnet/minecraft/client/gui/screens/inventory/AbstractContainerScreen;hasClickedOutside(DDIII)Z": "Lnet/minecraft/client/gui/screens/inventory/AbstractContainerScreen;m_7467_(DDIII)Z"
+      },
+      "yaboichips/rogue_planets/mixin/LevelRendererMixin": {
+        "renderSky(Lcom/mojang/blaze3d/vertex/PoseStack;Lorg/joml/Matrix4f;FLnet/minecraft/client/Camera;ZLjava/lang/Runnable;)V": "Lnet/minecraft/client/renderer/LevelRenderer;m_202423_(Lcom/mojang/blaze3d/vertex/PoseStack;Lorg/joml/Matrix4f;FLnet/minecraft/client/Camera;ZLjava/lang/Runnable;)V"
+      }
+    }
+  }
+}
