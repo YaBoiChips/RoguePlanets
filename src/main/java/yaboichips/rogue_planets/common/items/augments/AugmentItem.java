@@ -4,13 +4,13 @@ import net.minecraft.world.item.Item;
 
 public class AugmentItem extends Item {
     private final AugmentType type;
-    public AugmentItem(AugmentType type) {
-        super(new Properties());
+
+    public AugmentItem(Properties properties, AugmentType type) {
+        super(properties);
         this.type = type;
     }
 
     public AugmentType getType() {
         return type;
     }
-
 }

@@ -3,20 +3,19 @@
   "temperature": 0.5,
   "temperature_modifier": "none",
   "downfall": 0,
+  "attributes": {
+    "minecraft:visual/sky_color": "#000000",
+    "minecraft:visual/fog_color": "#323232"
+  },
   "effects": {
-    "sky_color": 0,
-    "fog_color": 3289650,
-    "water_color": 4159204,
-    "water_fog_color": 329011
+    "water_color": "#3F76E4"
   },
-  "carvers": {
-    "air": [
-      "rogueplanets:voidstone_cave",
-      "rogueplanets:voidstone_cave_entrance",
-      "minecraft:cave",
-      "minecraft:cave_extra_underground"
-    ]
-  },
+  "carvers": [
+    "rogueplanets:voidstone_cave",
+    "rogueplanets:voidstone_cave_entrance",
+    "minecraft:cave",
+    "minecraft:cave_extra_underground"
+  ],
   "features": [
     [
       "rogueplanets:ruby_ore",
@@ -32,8 +31,11 @@
       "rogueplanets:angled_arch",
       "rogueplanets:voidstone_stalagmites",
       "rogueplanets:voidstone_blobs",
-      "rogueplanets:cobbled_voidstone"
-
+      "rogueplanets:cobbled_voidstone",
+      "rogueplanets:small_camp",
+      "rogueplanets:camp_large1",
+      "rogueplanets:small_house1",
+      "rogueplanets:large_house1"
     ]
   ],
   "spawners": {},

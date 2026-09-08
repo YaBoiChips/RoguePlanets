@@ -1,22 +1,25 @@
 package yaboichips.rogue_planets.common.entities.workers.augmentor;
 
-import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
-import net.minecraft.world.inventory.ClickType;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
-import yaboichips.rogue_planets.capabilties.RogueCapabilities;
+import yaboichips.rogue_planets.common.containers.AugmentContainer;
 import yaboichips.rogue_planets.common.items.augments.AugmentItem;
 import yaboichips.rogue_planets.core.RPMenus;
+import yaboichips.rogue_planets.data.AugmentData;
+import yaboichips.rogue_planets.data.RPDataComponents;
 
 public class AugmentorMenu extends AbstractContainerMenu {
-    private SimpleContainer container;
+    private final SimpleContainer container;
 
     public Player player;
     private final SimpleContainer augmentableSlot = new SimpleContainer(1);
+    private AugmentContainer liveAugments;
+    private int liveAugmentSlots;
 
     public AugmentorMenu(int id, Inventory playerInventory, SimpleContainer container, SimpleContainer armor) {
         super(RPMenus.AUGMENTOR_MENU.get(), id);
@@ -29,7 +32,7 @@ public class AugmentorMenu extends AbstractContainerMenu {
         this.addSlot(new Slot(augmentableSlot, 0, 120, 44) {
             @Override
             public boolean mayPlace(ItemStack stack) {
-                return stack.getCapability(RogueCapabilities.AUGMENTABLE).isPresent();
+                return stack.has(RPDataComponents.AUGMENT_DATA.get());
             }
 
             @Override
@@ -63,37 +66,52 @@ public class AugmentorMenu extends AbstractContainerMenu {
         }
     }
 
-    public AugmentorMenu(int i, Inventory inventory, FriendlyByteBuf friendlyByteBuf) {
+    public AugmentorMenu(int i, Inventory inventory, RegistryFriendlyByteBuf buf) {
         this(i, inventory, new SimpleContainer(36), new SimpleContainer(4));
     }
 
     public void onClose() {
+        writeBackAugments();
         ItemStack stack = augmentableSlot.getItem(0);
         container.addItem(stack);
     }
 
     private void onSlotChanged(Slot slot) {
-        if (slot.getItem().getCapability(RogueCapabilities.AUGMENTABLE).isPresent()) {
-            slot.getItem().getCapability(RogueCapabilities.AUGMENTABLE).ifPresent(cap -> {
-                for (int i = 0; i < cap.getAugmentSlots(); i++) {
-//                            checkContainerSize(cap.getAugments(), cap.getAugmentSlots());
-                    Slot dynamicSlot = new Slot(cap.getAugments(), i, 102 + i * 18, 94) {
-                        @Override
-                        public boolean mayPlace(ItemStack stack) {
-                            return stack.getItem() instanceof AugmentItem;
-                        }
-                    };
-                    this.addSlot(dynamicSlot);
-                }
-            });
+        ItemStack stack = slot.getItem();
+        AugmentData data = stack.get(RPDataComponents.AUGMENT_DATA.get());
+        if (data != null) {
+            this.liveAugments = AugmentContainer.fromAugmentData(data, 3);
+            this.liveAugmentSlots = data.augmentSlots();
+            for (int i = 0; i < data.augmentSlots(); i++) {
+                Slot dynamicSlot = new Slot(liveAugments, i, 102 + i * 18, 94) {
+                    @Override
+                    public boolean mayPlace(ItemStack stack) {
+                        return stack.getItem() instanceof AugmentItem;
+                    }
+
+                    @Override
+                    public void setChanged() {
+                        super.setChanged();
+                        writeBackAugments();
+                    }
+                };
+                this.addSlot(dynamicSlot);
+            }
+        }
+    }
+
+    private void writeBackAugments() {
+        ItemStack stack = augmentableSlot.getItem(0);
+        if (!stack.isEmpty() && liveAugments != null) {
+            stack.set(RPDataComponents.AUGMENT_DATA.get(), liveAugments.toAugmentData(liveAugmentSlots));
         }
     }
 
     public void applyAugment() {
+        writeBackAugments();
         ItemStack stack = augmentableSlot.getItem(0);
         container.addItem(stack);
     }
-
 
     @Override
     public ItemStack quickMoveStack(Player p_38941_, int p_38942_) {

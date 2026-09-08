@@ -1,6 +1,6 @@
 package yaboichips.rogue_planets.common.entities.workers.forgemaster;
 
-import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.Container;
@@ -8,16 +8,15 @@ import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
-import net.minecraft.world.inventory.ClickType;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
-import yaboichips.rogue_planets.capabilties.player.PlayerDataUtils;
 import yaboichips.rogue_planets.common.items.LevelableItem;
 import yaboichips.rogue_planets.core.RPMenus;
+import yaboichips.rogue_planets.data.PlayerDataUtils;
 
 public class ForgeMasterMenu extends AbstractContainerMenu {
 
-    private Container container;
+    private final Container container;
 
     public Player player;
 
@@ -50,17 +49,16 @@ public class ForgeMasterMenu extends AbstractContainerMenu {
         }
     }
 
-    public ForgeMasterMenu(int i, Inventory inventory, FriendlyByteBuf friendlyByteBuf) {
+    public ForgeMasterMenu(int i, Inventory inventory, RegistryFriendlyByteBuf buf) {
         this(i, inventory, new SimpleContainer(36), new SimpleContainer(4));
     }
 
-
     @Override
-    public void removed(Player p_38940_) {
+    public void removed(Player player) {
         if (container instanceof SimpleContainer simpleContainer) {
             simpleContainer.addItem(levelSlot.getItem(0));
         }
-        super.removed(p_38940_);
+        super.removed(player);
     }
 
     @Override
@@ -94,15 +92,17 @@ public class ForgeMasterMenu extends AbstractContainerMenu {
     public void levelUpItem() {
         if (!player.level().isClientSide()) {
             ItemStack stack = levelSlot.getItem(0);
-            if (!stack.isEmpty() && stack.getItem() instanceof LevelableItem) {
-                if (((LevelableItem) stack.getItem()).getLevel(stack) < 20) {
-                    if (PlayerDataUtils.getCredits((ServerPlayer) player) >= stack.getTag().getInt("LevelCost")) {
-                        ((LevelableItem) stack.getItem()).levelUp(stack);
+            if (!stack.isEmpty() && stack.getItem() instanceof LevelableItem levelable) {
+                if (levelable.getLevel(stack) < 20) {
+                    int levelCost = levelable.getLevelUpCost(stack);
+                    ServerPlayer serverPlayer = (ServerPlayer) player;
+                    if (PlayerDataUtils.getCredits(serverPlayer) >= levelCost) {
+                        levelable.levelUp(stack);
                         stack.setDamageValue(-stack.getMaxDamage());
-                        PlayerDataUtils.subCredits((ServerPlayer) player, stack.getTag().getInt("LevelCost"));
-                        ((LevelableItem) stack.getItem()).setLevelUpCost(stack, 50 * ((LevelableItem) stack.getItem()).getLevel(stack));
+                        PlayerDataUtils.subCredits(serverPlayer, levelCost);
+                        levelable.setLevelUpCost(stack, 50 * levelable.getLevel(stack));
                     } else {
-                        player.sendSystemMessage(Component.literal("You need " + (stack.getTag().getInt("LevelCost") - PlayerDataUtils.getCredits((ServerPlayer) player) + " more Credits")));
+                        player.sendSystemMessage(Component.literal("You need " + (levelCost - PlayerDataUtils.getCredits(serverPlayer)) + " more Credits"));
                     }
                 } else {
                     player.sendSystemMessage(Component.literal("Item is Max Level"));

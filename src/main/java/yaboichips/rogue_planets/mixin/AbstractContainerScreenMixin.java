@@ -1,6 +1,7 @@
 package yaboichips.rogue_planets.mixin;
 
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
+import net.minecraft.client.input.KeyEvent;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import org.lwjgl.glfw.GLFW;
 import org.spongepowered.asm.mixin.Mixin;
@@ -19,16 +20,16 @@ public abstract class AbstractContainerScreenMixin {
     @Shadow
     protected AbstractContainerMenu menu;
 
-    @Inject(method = "Lnet/minecraft/client/gui/screens/inventory/AbstractContainerScreen;hasClickedOutside(DDIII)Z", at = @At("HEAD"), cancellable = true)
-    private void blockDropKey(double p_98845_, double p_98846_, int p_98847_, int p_98848_, int p_98849_, CallbackInfoReturnable<Boolean> cir) {
+    @Inject(method = "hasClickedOutside", at = @At("HEAD"), cancellable = true)
+    private void blockClickOutside(double mouseX, double mouseY, int guiLeft, int guiTop, CallbackInfoReturnable<Boolean> cir) {
         if (menu instanceof MerchantMenu || menu instanceof ForgeMasterMenu || menu instanceof CEOMenu || menu instanceof AugmentorMenu) {
             cir.setReturnValue(false);
         }
     }
 
-    @Inject(method = "Lnet/minecraft/client/gui/screens/inventory/AbstractContainerScreen;keyPressed(III)Z", at = @At("HEAD"), cancellable = true)
-    private void blockDropKey(int keyCode, int p_97766_, int p_97767_, CallbackInfoReturnable<Boolean> cir) {
-        if (keyCode == GLFW.GLFW_KEY_Q) {
+    @Inject(method = "keyPressed", at = @At("HEAD"), cancellable = true)
+    private void blockDropKey(KeyEvent event, CallbackInfoReturnable<Boolean> cir) {
+        if (event.key() == GLFW.GLFW_KEY_Q) {
             if (menu instanceof MerchantMenu || menu instanceof ForgeMasterMenu || menu instanceof CEOMenu || menu instanceof AugmentorMenu) {
                 cir.setReturnValue(true);
             }

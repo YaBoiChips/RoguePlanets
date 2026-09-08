@@ -1,19 +1,24 @@
 package yaboichips.rogue_planets.common.entities.canon;
 
+import com.geckolib.animatable.GeoEntity;
+import com.geckolib.animatable.instance.AnimatableInstanceCache;
+import com.geckolib.animatable.manager.AnimatableManager;
+import com.geckolib.util.GeckoLibUtil;
 import com.mojang.serialization.DynamicOps;
-import commoble.infiniverse.api.InfiniverseAPI;
-import net.minecraft.commands.CommandRuntimeException;
+import net.commoble.infiniverse.api.InfiniverseAPI;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.GlobalPos;
 import net.minecraft.core.Holder;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.registries.Registries;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtOps;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.game.ClientboundSetEntityMotionPacket;
+import net.minecraft.network.syncher.SynchedEntityData;
+import net.minecraft.resources.Identifier;
 import net.minecraft.resources.RegistryOps;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
@@ -24,57 +29,60 @@ import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.item.component.LodestoneTracker;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.chunk.ChunkGenerator;
 import net.minecraft.world.level.dimension.DimensionType;
 import net.minecraft.world.level.dimension.LevelStem;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 import net.minecraft.world.phys.Vec3;
-import software.bernie.geckolib.animatable.GeoEntity;
-import software.bernie.geckolib.core.animatable.instance.AnimatableInstanceCache;
-import software.bernie.geckolib.core.animation.AnimatableManager;
-import software.bernie.geckolib.util.GeckoLibUtil;
 import yaboichips.rogue_planets.RoguePlanets;
-import yaboichips.rogue_planets.capabilties.player.PlayerDataUtils;
 import yaboichips.rogue_planets.common.containers.PlanetInventoryContainer;
 import yaboichips.rogue_planets.common.containers.SaveableSimpleContainer;
 import yaboichips.rogue_planets.common.items.LevelableItem;
 import yaboichips.rogue_planets.common.nbt.parties.PartyData;
 import yaboichips.rogue_planets.core.RPEntities;
+import yaboichips.rogue_planets.data.PlayerDataUtils;
+
+import java.util.Optional;
+import java.util.OptionalLong;
+import java.util.Set;
 
 import static yaboichips.rogue_planets.RoguePlanets.MODID;
-
 
 public class CanonEntity extends Entity implements GeoEntity {
     private final AnimatableInstanceCache animatableInstanceCache = GeckoLibUtil.createInstanceCache(this);
 
-    public CanonEntity(EntityType<? extends Entity> p_21368_, Level p_21369_) {
-        super(p_21368_, p_21369_);
+    public CanonEntity(EntityType<? extends Entity> type, Level level) {
+        super(type, level);
     }
 
     @Override
-    protected void defineSynchedData() {
+    protected void defineSynchedData(SynchedEntityData.Builder builder) {
     }
 
     @Override
-    protected void readAdditionalSaveData(CompoundTag compoundTag) {
+    protected void readAdditionalSaveData(ValueInput input) {
     }
 
     @Override
-    protected void addAdditionalSaveData(CompoundTag compoundTag) {
+    protected void addAdditionalSaveData(ValueOutput output) {
     }
 
     @Override
-    protected boolean canRide(Entity p_20339_) {
+    protected boolean canRide(Entity entity) {
         return true;
     }
 
     @Override
-    public boolean canBeCollidedWith() {
+    public boolean canBeCollidedWith(Entity entity) {
         return false;
     }
 
@@ -84,9 +92,14 @@ public class CanonEntity extends Entity implements GeoEntity {
     }
 
     @Override
-    public InteractionResult interact(Player player, InteractionHand hand) {
+    public boolean hurtServer(ServerLevel level, net.minecraft.world.damagesource.DamageSource damageSource, float amount) {
+        return false;
+    }
+
+    @Override
+    public InteractionResult interact(Player player, InteractionHand hand, net.minecraft.world.phys.Vec3 hitPos) {
         if (player instanceof ServerPlayer serverPlayer && !level().isClientSide()) {
-            PartyData partyData = PartyData.get(serverPlayer.serverLevel());
+            PartyData partyData = PartyData.get(serverPlayer.level());
             if (PlayerDataUtils.getIsInitiated(serverPlayer)) {
                 if (partyData.isInParty(serverPlayer.getUUID())) {
                     if (partyData.isLeader(serverPlayer.getUUID())) {
@@ -124,34 +137,33 @@ public class CanonEntity extends Entity implements GeoEntity {
     }
 
     public void launchPlayer(ServerPlayer serverPlayer, boolean playSound) {
-        Vec3 launchVelocity = new Vec3(0, 70, 0); // Upward velocity
-        serverPlayer.connection.send(new ClientboundSetEntityMotionPacket(serverPlayer.getId(), launchVelocity)); // Send packet to sync with client
-        serverPlayer.setDeltaMovement(launchVelocity); // Launch player upwards
+        Vec3 launchVelocity = new Vec3(0, 70, 0);
+        serverPlayer.connection.send(new ClientboundSetEntityMotionPacket(serverPlayer.getId(), launchVelocity));
+        serverPlayer.setDeltaMovement(launchVelocity);
         if (playSound) {
-            serverPlayer.playSound(SoundEvents.GENERIC_EXPLODE);
+            serverPlayer.playSound(SoundEvents.GENERIC_EXPLODE.value());
         }
     }
 
     private void teleportToLevel(ServerPlayer serverPlayer) {
-        PartyData partyData = PartyData.get(serverPlayer.serverLevel());
+        PartyData partyData = PartyData.get(serverPlayer.level());
         if (serverPlayer.level().dimension() == Level.OVERWORLD) {
             if (partyData.isInParty(serverPlayer.getUUID()) && !partyData.isLeader(serverPlayer.getUUID())) {
                 PlayerDataUtils.setO2(serverPlayer, 19000);
-                serverPlayer.teleportTo(this.getServer().getPlayerList().getPlayer(partyData.getParty(serverPlayer.getUUID()).leader).serverLevel(), serverPlayer.getX(), 145, serverPlayer.getZ(), 0, 0);
+                serverPlayer.teleportTo(serverPlayer.level().getServer().getPlayerList().getPlayer(partyData.getParty(serverPlayer.getUUID()).leader).level(), serverPlayer.getX(), 145, serverPlayer.getZ(), Set.of(), 0, 0, true);
                 serverPlayer.addEffect(new MobEffectInstance(MobEffects.SLOW_FALLING, 120));
                 loadPlanetInventory(serverPlayer, PlayerDataUtils.getPlanetContainer(serverPlayer));
             } else {
-                ServerLevel world = InfiniverseAPI.get().getOrCreateLevel(serverPlayer.server, ResourceKey.create(Registries.DIMENSION, ResourceLocation.fromNamespaceAndPath(MODID, serverPlayer.getStringUUID() + "planet" + serverPlayer.level().random.nextInt())), () -> getWorldSettings(serverPlayer.serverLevel()));
-                world.getServer().getWorldData().worldGenOptions().seed = random.nextInt();
+                ServerLevel world = InfiniverseAPI.get().getOrCreateLevel(serverPlayer.level().getServer(), ResourceKey.create(Registries.DIMENSION, Identifier.fromNamespaceAndPath(MODID, serverPlayer.getStringUUID() + "planet" + serverPlayer.level().getRandom().nextInt())), () -> getWorldSettings(serverPlayer.level()));
                 PlayerDataUtils.setSavedInventory(serverPlayer, new SaveableSimpleContainer(serverPlayer.getInventory()));
                 loadPlanetInventory(serverPlayer, PlayerDataUtils.getPlanetContainer(serverPlayer));
                 PlayerDataUtils.setO2(serverPlayer, 19000);
-                serverPlayer.teleportTo(world, serverPlayer.getX(), 145, serverPlayer.getZ(), 0, 0);
+                serverPlayer.teleportTo(world, serverPlayer.getX(), 145, serverPlayer.getZ(), Set.of(), 0, 0, true);
                 serverPlayer.addEffect(new MobEffectInstance(MobEffects.SLOW_FALLING, 140));
                 createCanon(world, serverPlayer.blockPosition().getX(), serverPlayer.blockPosition().getZ(), serverPlayer);
             }
         } else {
-            serverPlayer.teleportTo(serverPlayer.getServer().getLevel(Level.OVERWORLD), serverPlayer.getX(), serverPlayer.getY(), serverPlayer.getZ(), 0, 0);
+            serverPlayer.teleportTo(serverPlayer.level().getServer().getLevel(Level.OVERWORLD), serverPlayer.getX(), serverPlayer.getY(), serverPlayer.getZ(), Set.of(), 0, 0, true);
             PlayerDataUtils.setPlanetContainer(serverPlayer, new PlanetInventoryContainer(serverPlayer.getInventory()));
             loadOverworldInventory(serverPlayer, PlayerDataUtils.getSavedInventory(serverPlayer));
             serverPlayer.addEffect(new MobEffectInstance(MobEffects.SLOW_FALLING, 420));
@@ -161,7 +173,7 @@ public class CanonEntity extends Entity implements GeoEntity {
 
     public static void createCanon(ServerLevel level, int x, int z, ServerPlayer player) {
         int foundY = Integer.MIN_VALUE;
-        for (int y = 150; y > level.getMinBuildHeight(); y--) {
+        for (int y = 150; y > level.getMinY(); y--) {
             BlockPos pos = new BlockPos(x, y, z);
             if (!level.getBlockState(pos).isAir()) {
                 foundY = y;
@@ -176,24 +188,20 @@ public class CanonEntity extends Entity implements GeoEntity {
                 level.setBlock(platformY.offset(dx, 0, dz), Blocks.SMOOTH_STONE.defaultBlockState(), Block.UPDATE_ALL);
             }
         }
-        CanonEntity canon = RPEntities.CANON.get().create(level);
+        CanonEntity canon = RPEntities.CANON.get().create(level, net.minecraft.world.entity.EntitySpawnReason.TRIGGERED);
         if (canon == null) return;
-        canon.moveTo(x + 0.5, foundY + 1, z + 0.5, 0f, 0f);
+        canon.snapTo(x + 0.5, foundY + 1, z + 0.5, 0f, 0f);
         canon.setGlowingTag(true);
         level.addFreshEntity(canon);
 
-        player.getInventory().items.replaceAll(stack -> stack.is(Items.COMPASS) ? ItemStack.EMPTY : stack);
-        player.getInventory().offhand.replaceAll(stack -> stack.is(Items.COMPASS) ? ItemStack.EMPTY : stack);
+        Inventory inventory = player.getInventory();
+        inventory.getNonEquipmentItems().replaceAll(stack -> stack.is(Items.COMPASS) ? ItemStack.EMPTY : stack);
+        if (inventory.getItem(Inventory.SLOT_OFFHAND).is(Items.COMPASS)) {
+            inventory.setItem(Inventory.SLOT_OFFHAND, ItemStack.EMPTY);
+        }
 
         ItemStack compass = new ItemStack(Items.COMPASS);
-        CompoundTag nbt = compass.getOrCreateTag();
-        nbt.putBoolean("LodestoneTracked", false); // no actual lodestone block needed
-        nbt.putString("LodestoneDimension", level.dimension().location().toString());
-        CompoundTag lodestonePos = new CompoundTag();
-        lodestonePos.putInt("X", x);
-        lodestonePos.putInt("Y", foundY);
-        lodestonePos.putInt("Z", z);
-        nbt.put("LodestonePos", lodestonePos);
+        compass.set(DataComponents.LODESTONE_TRACKER, new LodestoneTracker(Optional.of(GlobalPos.of(level.dimension(), platformY)), false));
 
         if (!player.getInventory().add(compass)) {
             player.drop(compass, false);
@@ -203,7 +211,7 @@ public class CanonEntity extends Entity implements GeoEntity {
     public void checkToAddSlowFalling(ServerPlayer player) {
         BlockPos playerPos = player.blockPosition();
         BlockPos targetPos = playerPos.below(10);
-        ServerLevel world = player.serverLevel();
+        ServerLevel world = player.level();
         if (world.getBlockState(targetPos).isAir()) {
             player.addEffect(new MobEffectInstance(MobEffects.SLOW_FALLING, 420));
         }
@@ -216,12 +224,11 @@ public class CanonEntity extends Entity implements GeoEntity {
         ChunkGenerator oldChunkGenerator = oldLevel.getChunkSource().getGenerator();
         ChunkGenerator newChunkGenerator = ChunkGenerator.CODEC.encodeStart(ops, oldChunkGenerator)
                 .flatMap(nbt -> ChunkGenerator.CODEC.parse(ops, nbt))
-                .getOrThrow(false, s ->
-                {
-                    throw new CommandRuntimeException(Component.literal(String.format("Error copying dimension: %s", s)));
-                });
+                .getOrThrow(s -> new IllegalStateException(String.format("Error copying dimension: %s", s)));
         Holder<DimensionType> typeHolder = oldLevel.dimensionTypeRegistration();
-        return new LevelStem(typeHolder, newChunkGenerator);
+        // Each planet gets a fresh, genuinely random seed unrelated to the overworld's seed.
+        long randomSeed = server.overworld().getRandom().nextLong();
+        return new LevelStem(typeHolder, newChunkGenerator, OptionalLong.of(randomSeed));
     }
 
     private void loadPlanetInventory(ServerPlayer player, PlanetInventoryContainer cap) {
@@ -235,8 +242,8 @@ public class CanonEntity extends Entity implements GeoEntity {
     }
 
     private void loadOverworldInventory(ServerPlayer player, SaveableSimpleContainer cap) {
-        for (int i = 0; i < cap.getContainerSize(); i++) {
-            player.getInventory().load(cap.createTag());
+        for (int i = 0; i < cap.getItems().size(); i++) {
+            player.getInventory().setItem(i, cap.getItems().get(i).copy());
         }
     }
 

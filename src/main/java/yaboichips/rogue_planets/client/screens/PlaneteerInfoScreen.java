@@ -1,6 +1,6 @@
 package yaboichips.rogue_planets.client.screens;
 
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
 
@@ -8,32 +8,31 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class PlaneteerInfoScreen extends Screen {
-    // A list to hold integers and their positions
-    private final int credits; // Reference to the player
+    private final int credits;
     private final List<IntRenderData> intDataList = new ArrayList<>();
 
     public PlaneteerInfoScreen(int credits) {
         super(Component.literal("Planeteer Manuel"));
         this.credits = credits;
     }
+
     @Override
     protected void init() {
         super.init();
+        addInt("Credits", credits, 10, 10);
     }
 
     @Override
-    public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
-        this.renderBackground(guiGraphics);
-        addInt("Credits", credits, 10, 10);
+    public void extractRenderState(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTicks) {
+        this.extractBackground(guiGraphics, mouseX, mouseY, partialTicks);
         for (IntRenderData data : intDataList) {
             if (data.description == null) {
-                guiGraphics.drawString(this.font, String.valueOf(data.value), data.x, data.y, 0xFFFFFF, false);
+                guiGraphics.text(this.font, String.valueOf(data.value), data.x, data.y, 0xFFFFFF, false);
             } else {
-                guiGraphics.drawString(this.font, data.description + ": " + data.value, data.x, data.y, 0xFFFFFF, false);
-
+                guiGraphics.text(this.font, data.description + ": " + data.value, data.x, data.y, 0xFFFFFF, false);
             }
         }
-        super.render(guiGraphics, mouseX, mouseY, partialTicks);
+        super.extractRenderState(guiGraphics, mouseX, mouseY, partialTicks);
     }
 
     public void addInt(int value, int x, int y) {
@@ -44,8 +43,6 @@ public class PlaneteerInfoScreen extends Screen {
         this.intDataList.add(new IntRenderData(description, value, x, y));
     }
 
-    // Class to hold integer and position data
-        private record IntRenderData(String description, int value, int x, int y) {
+    private record IntRenderData(String description, int value, int x, int y) {
     }
 }
-

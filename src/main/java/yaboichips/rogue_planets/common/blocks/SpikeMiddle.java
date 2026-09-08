@@ -10,11 +10,11 @@ import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 
 public class SpikeMiddle extends Block {
-    public SpikeMiddle(Properties p_49795_) {
-        super(p_49795_);
+    public SpikeMiddle(Properties properties) {
+        super(properties);
     }
 
-    public VoxelShape makeShape(){
+    public VoxelShape makeShape() {
         VoxelShape shape = Shapes.empty();
         shape = Shapes.join(shape, Shapes.box(0.25, 0, 0.25, 0.75, 1, 0.75), BooleanOp.OR);
 
@@ -22,7 +22,7 @@ public class SpikeMiddle extends Block {
     }
 
     @Override
-    public VoxelShape getShape(BlockState p_60555_, BlockGetter p_60556_, BlockPos p_60557_, CollisionContext p_60558_) {
+    public VoxelShape getShape(BlockState state, BlockGetter level, BlockPos pos, CollisionContext context) {
         return makeShape();
     }
 }

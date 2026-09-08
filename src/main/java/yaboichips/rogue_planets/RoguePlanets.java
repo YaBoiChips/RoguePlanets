@@ -1,41 +1,29 @@
 package yaboichips.rogue_planets;
 
 import com.mojang.logging.LogUtils;
-import commoble.infiniverse.api.InfiniverseAPI;
+import net.commoble.infiniverse.api.InfiniverseAPI;
 import net.minecraft.core.registries.Registries;
+import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
-import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.common.capabilities.RegisterCapabilitiesEvent;
-import net.minecraftforge.common.util.LazyOptional;
-import net.minecraftforge.event.AttachCapabilitiesEvent;
-import net.minecraftforge.event.RegisterCommandsEvent;
-import net.minecraftforge.event.TickEvent;
-import net.minecraftforge.event.entity.EntityAttributeCreationEvent;
-import net.minecraftforge.event.entity.EntityJoinLevelEvent;
-import net.minecraftforge.event.entity.player.AttackEntityEvent;
-import net.minecraftforge.event.entity.player.PlayerEvent;
-import net.minecraftforge.eventbus.api.IEventBus;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.ModLoadingContext;
-import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.config.ModConfig;
-import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
-import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
+import net.neoforged.bus.api.IEventBus;
+import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.fml.common.Mod;
+import net.neoforged.neoforge.common.NeoForge;
+import net.neoforged.neoforge.event.RegisterCommandsEvent;
+import net.neoforged.neoforge.event.entity.EntityAttributeCreationEvent;
+import net.neoforged.neoforge.event.entity.player.AttackEntityEvent;
+import net.neoforged.neoforge.event.entity.player.PlayerEvent;
+import net.neoforged.neoforge.event.tick.PlayerTickEvent;
+import net.neoforged.neoforge.event.tick.ServerTickEvent;
 import org.slf4j.Logger;
-import yaboichips.rogue_planets.capabilties.ArmorData;
-import yaboichips.rogue_planets.capabilties.RogueCapabilities;
-import yaboichips.rogue_planets.capabilties.player.PlayerData;
-import yaboichips.rogue_planets.capabilties.player.PlayerDataProvider;
-import yaboichips.rogue_planets.capabilties.player.PlayerDataUtils;
 import yaboichips.rogue_planets.common.commands.PartyCommand;
 import yaboichips.rogue_planets.common.entities.monsters.GenericMonster;
 import yaboichips.rogue_planets.common.entities.workers.HumanMob;
 import yaboichips.rogue_planets.core.RPEntities;
+import yaboichips.rogue_planets.data.PlayerDataUtils;
 import yaboichips.rogue_planets.network.RoguePackets;
 import yaboichips.rogue_planets.network.SendPlayerDataPacket;
 
@@ -50,49 +38,32 @@ import static yaboichips.rogue_planets.core.RPItems.CREATIVE_MODE_TABS;
 import static yaboichips.rogue_planets.core.RPItems.ITEMS;
 import static yaboichips.rogue_planets.core.RPMenus.MENUS;
 import static yaboichips.rogue_planets.core.world.RPFeatures.FEATURES;
+import static yaboichips.rogue_planets.data.RPAttachments.ATTACHMENT_TYPES;
+import static yaboichips.rogue_planets.data.RPDataComponents.DATA_COMPONENTS;
 
-// The value here should match an entry in the META-INF/mods.toml file
 @Mod(RoguePlanets.MODID)
 public class RoguePlanets {
 
-    // Define mod id in a common place for everything to reference
     public static final String MODID = "rogueplanets";
-    // Directly reference a slf4j logger
     private static final Logger LOGGER = LogUtils.getLogger();
     public static long currentTick = 0;
     private static final Map<Long, Runnable> scheduledTasks = new ConcurrentHashMap<>();
-    public static ResourceKey<Level> MINER_DIMENSION = ResourceKey.create(Registries.DIMENSION, ResourceLocation.fromNamespaceAndPath(MODID, "miner_dimension"));
+    public static final ResourceKey<Level> MINER_DIMENSION = ResourceKey.create(Registries.DIMENSION, Identifier.fromNamespaceAndPath(MODID, "miner_dimension"));
 
-    /*
-    TODO GET MOB SPAWNS WORKING
-    TODO MAKE PLANET DARK
-    TODO PLATFORM THROWABLE THING
-     */
-
-    public RoguePlanets() {
-        IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
-        MinecraftForge.EVENT_BUS.register(this);
+    public RoguePlanets(IEventBus modEventBus) {
+        NeoForge.EVENT_BUS.register(this);
+        ENTITIES.register(modEventBus);
         BLOCKS.register(modEventBus);
         ITEMS.register(modEventBus);
-        ENTITIES.register(modEventBus);
         MENUS.register(modEventBus);
         CREATIVE_MODE_TABS.register(modEventBus);
         BLOCK_ENTITY_TYPES.register(modEventBus);
         FEATURES.register(modEventBus);
-        modEventBus.addListener(this::onCommonSetup);
-        modEventBus.addListener(this::registerCapabilities);
+        ATTACHMENT_TYPES.register(modEventBus);
+        DATA_COMPONENTS.register(modEventBus);
         modEventBus.addListener(this::entityAttributes);
-        ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, Config.SPEC);
+        modEventBus.addListener(RoguePackets::registerPackets);
         LOGGER.info("Rogue Planets Registered");
-    }
-
-    public void onCommonSetup(FMLCommonSetupEvent event) {
-        RoguePackets.registerPackets();
-    }
-
-    public void registerCapabilities(RegisterCapabilitiesEvent event) {
-        event.register(ArmorData.class);
-        event.register(PlayerData.class);
     }
 
     public void entityAttributes(final EntityAttributeCreationEvent event) {
@@ -114,89 +85,57 @@ public class RoguePlanets {
     }
 
     @SubscribeEvent
-    public void onAttachCapabilitiesPlayer(AttachCapabilitiesEvent<Entity> event) {
-        if (event.getObject() instanceof Player player) {
-            player.reviveCaps();
-            if (!event.getObject().getCapability(RogueCapabilities.PLAYER_DATA).isPresent()) {
-                event.addCapability(RogueCapabilities.PLAYER_DATA_LOCATION, new PlayerDataProvider());
-            }
-        }
-    }
-
-    @SubscribeEvent
-    public void onPlayerJoin(EntityJoinLevelEvent event) {
-        if (event.getEntity().level().isClientSide)
+    public void onPlayerJoin(PlayerEvent.PlayerLoggedInEvent event) {
+        if (event.getEntity().level().isClientSide())
             return;
         if (event.getEntity() instanceof ServerPlayer player) {
-            player.reviveCaps();
             RoguePackets.sendToPlayer(new SendPlayerDataPacket(PlayerDataUtils.getO2(player), PlayerDataUtils.getCredits(player)), player);
         }
     }
 
     @SubscribeEvent
     public void onPlayerClone(PlayerEvent.Clone event) {
-        if (event.getOriginal().level().isClientSide)
+        if (event.getOriginal().level().isClientSide())
             return;
 
         ResourceKey<Level> fromDimension = event.getOriginal().level().dimension();
 
-        // Check if the dimension the player is leaving belongs to your mod
-        if (fromDimension.location().getNamespace().equals(MODID)) {
-            if (event.getEntity().getServer().getLevel(fromDimension).players().isEmpty()) {
-                InfiniverseAPI.get().markDimensionForUnregistration(event.getEntity().getServer(), fromDimension);
+        // Check if the dimension the player is leaving belongs to this mod
+        if (fromDimension.identifier().getNamespace().equals(MODID) && event.getEntity() instanceof ServerPlayer serverPlayer) {
+            MinecraftServer server = serverPlayer.level().getServer();
+            if (server.getLevel(fromDimension).players().isEmpty()) {
+                InfiniverseAPI.get().markDimensionForUnregistration(server, fromDimension);
             }
         }
-        if (event.isWasDeath()) {
-            event.getOriginal().reviveCaps();
-            LazyOptional<PlayerData> loNewCap = event.getOriginal().getCapability(RogueCapabilities.PLAYER_DATA);
-            LazyOptional<PlayerData> loOldCap = event.getOriginal().getCapability(RogueCapabilities.PLAYER_DATA);
-            loNewCap.ifPresent(newCap -> {
-                loOldCap.ifPresent(oldCap -> {
-                    event.getOriginal().reviveCaps();
-                    PlayerDataUtils.setO2((ServerPlayer) event.getEntity(), oldCap.getO2());
-                    PlayerDataUtils.setCredits((ServerPlayer) event.getEntity(), oldCap.getCredits());
-                    PlayerDataUtils.setInitiated((ServerPlayer) event.getEntity(), oldCap.getIsInitiated());
-                    PlayerDataUtils.setPlanetContainer((ServerPlayer) event.getEntity(), oldCap.getPlanetContainer());
-                    PlayerDataUtils.setArmorContainer((ServerPlayer) event.getEntity(), oldCap.getArmorContainer());
-                });
-            });
-        }
+        // Player data attachments copy on death automatically via .copyOnDeath()
     }
 
     @SubscribeEvent
     public void onPlayerAttack(AttackEntityEvent event) {
-        event.getEntity().getCapability(RogueCapabilities.PLAYER_DATA).ifPresent(playerData -> {
-            //replace with potion effect
-//            if (playerData.isPyrolithActive()) {
-//                event.getTarget().setSecondsOnFire(30);
-//            }
-//            if (playerData.isAzuriumActive()) {
-//                ((LivingEntity) event.getTarget()).addEffect(new MobEffectInstance(MobEffects.LEVITATION, 200, 1));
-//            }
-        });
+        // replace with potion effect (see crystal items)
     }
 
     @SubscribeEvent
     public void onPlayerChangedDimension(PlayerEvent.PlayerChangedDimensionEvent event) {
         ResourceKey<Level> fromDimension = event.getFrom();
-        // Check if the dimension the player is leaving belongs to your mod
-        if (fromDimension.location().getNamespace().equals(MODID)) {
-            if (event.getEntity().getServer().getLevel(fromDimension).players().isEmpty()) {
-                InfiniverseAPI.get().markDimensionForUnregistration(event.getEntity().getServer(), fromDimension);
+        if (fromDimension.identifier().getNamespace().equals(MODID) && event.getEntity() instanceof ServerPlayer serverPlayer) {
+            MinecraftServer server = serverPlayer.level().getServer();
+            if (server.getLevel(fromDimension).players().isEmpty()) {
+                InfiniverseAPI.get().markDimensionForUnregistration(server, fromDimension);
             }
         }
     }
 
     @SubscribeEvent
-    public void onPlayerTick(TickEvent.PlayerTickEvent event) {
-        if (event.side.isClient()) return;
-        ServerPlayer player = (ServerPlayer) event.player;
+    public void onPlayerTick(PlayerTickEvent.Post event) {
+        if (event.getEntity().level().isClientSide()) return;
+        ServerPlayer player = (ServerPlayer) event.getEntity();
         RoguePackets.sendToPlayer(new SendPlayerDataPacket(PlayerDataUtils.getO2(player), PlayerDataUtils.getCredits(player)), player);
-        if (player.serverLevel().dimension().location().getNamespace().equals("rogueplanets")) {
+        if (player.level().dimension().identifier().getNamespace().equals(MODID)) {
             PlayerDataUtils.subO2(player, 1);
             if (PlayerDataUtils.getO2(player) <= 0) {
                 if (player.isAlive()) {
-                    player.kill();
+                    player.kill(player.level());
                 }
             }
         }
@@ -207,12 +146,8 @@ public class RoguePlanets {
         PartyCommand.register(event.getDispatcher());
     }
 
-
     @SubscribeEvent
-    public void onServerTick(TickEvent.ServerTickEvent event) {
-        if (event.phase == TickEvent.Phase.START) {
-            return;
-        }
+    public void onServerTick(ServerTickEvent.Post event) {
         currentTick++;
         Iterator<Map.Entry<Long, Runnable>> iterator = scheduledTasks.entrySet().iterator();
         while (iterator.hasNext()) {
@@ -221,8 +156,7 @@ public class RoguePlanets {
                 try {
                     entry.getValue().run();
                 } catch (Exception e) {
-                    e.printStackTrace();
-                    LOGGER.info("ROGUE PLANET SERVER EVENT KILLED ITSELF, YELL AT CHIPS");
+                    LOGGER.error("ROGUE PLANET SERVER EVENT KILLED ITSELF, YELL AT CHIPS", e);
                 }
                 iterator.remove();
             }

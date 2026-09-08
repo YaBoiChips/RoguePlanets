@@ -1,44 +1,27 @@
 package yaboichips.rogue_planets.network;
 
-import net.minecraft.client.Minecraft;
-import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.world.entity.player.Player;
-import net.minecraftforge.network.NetworkEvent;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.ByteBufCodecs;
+import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
+import net.minecraft.resources.Identifier;
+import net.neoforged.neoforge.network.handling.IPayloadContext;
+import yaboichips.rogue_planets.RoguePlanets;
 import yaboichips.rogue_planets.client.ClientPacketHandler;
-import yaboichips.rogue_planets.client.screens.PlaneteerInfoScreen;
 
-import java.util.function.Supplier;
+public record OpenPlaneteerGUIPacket(int credits) implements CustomPacketPayload {
+    public static final Type<OpenPlaneteerGUIPacket> TYPE = new Type<>(Identifier.fromNamespaceAndPath(RoguePlanets.MODID, "open_planeteer_gui"));
+    public static final StreamCodec<RegistryFriendlyByteBuf, OpenPlaneteerGUIPacket> STREAM_CODEC = StreamCodec.composite(
+            ByteBufCodecs.VAR_INT, OpenPlaneteerGUIPacket::credits,
+            OpenPlaneteerGUIPacket::new
+    );
 
-public class OpenPlaneteerGUIPacket {
-    public final int credits;
-//    private final int xp;
-//    private final int level;
-    public OpenPlaneteerGUIPacket(int credits) {
-        this.credits = credits;
-//        this.xp = xp;
-//        this.level = level;
+    @Override
+    public Type<? extends CustomPacketPayload> type() {
+        return TYPE;
     }
 
-    // Encode packet data to buffer
-    public void encode(FriendlyByteBuf buf) {
-        buf.writeInt(credits);
-//        buf.writeInt(xp);
-//        buf.writeInt(level);
-    }
-
-    // Decode packet data from buffer
-    public static OpenPlaneteerGUIPacket decode(FriendlyByteBuf buf) {
-        return new OpenPlaneteerGUIPacket(buf.readInt());
-    }
-
-    // Handle the packet
-    public static void handle(OpenPlaneteerGUIPacket packet, Supplier<NetworkEvent.Context> contextSupplier) {
-        NetworkEvent.Context context = contextSupplier.get();
-        context.enqueueWork(() -> {
-            if (context.getDirection().getReceptionSide().isClient()) {
-                ClientPacketHandler.handle(packet);
-            }
-        });
-        context.setPacketHandled(true);
+    public static void handle(OpenPlaneteerGUIPacket packet, IPayloadContext context) {
+        ClientPacketHandler.handle(packet);
     }
 }

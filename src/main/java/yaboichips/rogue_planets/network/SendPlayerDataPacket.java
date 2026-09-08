@@ -1,36 +1,29 @@
 package yaboichips.rogue_planets.network;
 
-import net.minecraft.network.FriendlyByteBuf;
-import net.minecraftforge.network.NetworkEvent;
-import yaboichips.rogue_planets.capabilties.player.ClientPlayerData;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.ByteBufCodecs;
+import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
+import net.minecraft.resources.Identifier;
+import net.neoforged.neoforge.network.handling.IPayloadContext;
+import yaboichips.rogue_planets.RoguePlanets;
+import yaboichips.rogue_planets.data.ClientPlayerData;
 
-import java.util.function.Supplier;
+public record SendPlayerDataPacket(int o2, int credits) implements CustomPacketPayload {
+    public static final Type<SendPlayerDataPacket> TYPE = new Type<>(Identifier.fromNamespaceAndPath(RoguePlanets.MODID, "send_player_data"));
+    public static final StreamCodec<RegistryFriendlyByteBuf, SendPlayerDataPacket> STREAM_CODEC = StreamCodec.composite(
+            ByteBufCodecs.VAR_INT, SendPlayerDataPacket::o2,
+            ByteBufCodecs.VAR_INT, SendPlayerDataPacket::credits,
+            SendPlayerDataPacket::new
+    );
 
-public class SendPlayerDataPacket {
-    private final int o2;
-    private final int credits;
-
-
-    public SendPlayerDataPacket(int o2, int credits) {
-        this.o2 = o2;
-        this.credits = credits;
+    @Override
+    public Type<? extends CustomPacketPayload> type() {
+        return TYPE;
     }
 
-    public static void encode(SendPlayerDataPacket msg, FriendlyByteBuf buf) {
-        buf.writeInt(msg.o2);
-        buf.writeInt(msg.credits);
-    }
-
-    public static SendPlayerDataPacket decode(FriendlyByteBuf buf) {
-        return new SendPlayerDataPacket(buf.readInt(), buf.readInt());
-    }
-
-    public static void handle(SendPlayerDataPacket msg, Supplier<NetworkEvent.Context> ctx) {
-        ctx.get().enqueueWork(() -> {
-                    ClientPlayerData.setO2(msg.o2);
-                    ClientPlayerData.setCredits(msg.credits);
-                }
-        );
-        ctx.get().setPacketHandled(true);
+    public static void handle(SendPlayerDataPacket packet, IPayloadContext context) {
+        ClientPlayerData.setO2(packet.o2());
+        ClientPlayerData.setCredits(packet.credits());
     }
 }

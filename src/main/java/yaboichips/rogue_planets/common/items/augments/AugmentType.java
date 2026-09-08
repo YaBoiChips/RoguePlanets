@@ -7,7 +7,8 @@ public enum AugmentType {
     HASTE(RPItems.PLANETEER_PICKAXE.get());
 
     private Item item;
-    AugmentType(Item item){
+
+    AugmentType(Item item) {
         this.item = item;
     }
 

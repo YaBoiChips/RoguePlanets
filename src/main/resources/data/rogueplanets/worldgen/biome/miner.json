@@ -1,24 +1,27 @@
 {
-  "carvers": {
-  },
   "downfall": 0.0,
+  "carvers": [],
+  "attributes": {
+    "minecraft:visual/sky_color": "#78A7FF",
+    "minecraft:visual/fog_color": "#C0D8FF",
+    "minecraft:audio/ambient_sounds": {
+      "mood": {
+        "block_search_extent": 8,
+        "offset": 2.0,
+        "sound": "minecraft:ambient.cave",
+        "tick_delay": 6000
+      }
+    },
+    "minecraft:audio/background_music": {
+      "default": {
+        "max_delay": 24000,
+        "min_delay": 12000,
+        "sound": "minecraft:music.overworld.dripstone_caves"
+      }
+    }
+  },
   "effects": {
-    "fog_color": 12638463,
-    "mood_sound": {
-      "block_search_extent": 8,
-      "offset": 2,
-      "sound": "minecraft:ambient.cave",
-      "tick_delay": 6000
-    },
-    "music": {
-      "max_delay": 24000,
-      "min_delay": 12000,
-      "replace_current_music": false,
-      "sound": "minecraft:music.overworld.dripstone_caves"
-    },
-    "sky_color": 7907327,
-    "water_color": 12851903,
-    "water_fog_color": 329011
+    "water_color": "#C41ABF"
   },
   "features": [
     [

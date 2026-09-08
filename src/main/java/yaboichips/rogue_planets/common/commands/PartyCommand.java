@@ -17,7 +17,7 @@ public class PartyCommand {
                 .then(Commands.literal("create")
                         .executes(ctx -> {
                             ServerPlayer player = ctx.getSource().getPlayerOrException();
-                            PartyData data = PartyData.get(player.serverLevel());
+                            PartyData data = PartyData.get(player.level());
 
                             if (data.isInParty(player.getUUID())) {
                                 ctx.getSource().sendFailure(Component.literal("You're already in a party."));
@@ -34,7 +34,7 @@ public class PartyCommand {
                                 .executes(ctx -> {
                                     ServerPlayer player = ctx.getSource().getPlayerOrException();
                                     ServerPlayer target = EntityArgument.getPlayer(ctx, "target");
-                                    PartyData data = PartyData.get(player.serverLevel());
+                                    PartyData data = PartyData.get(player.level());
 
                                     if (!data.isLeader(player.getUUID())) {
                                         ctx.getSource().sendFailure(Component.literal("Only the party leader can invite."));
@@ -55,7 +55,7 @@ public class PartyCommand {
                                 .executes(ctx -> {
                                     ServerPlayer player = ctx.getSource().getPlayerOrException();
                                     ServerPlayer target = EntityArgument.getPlayer(ctx, "target");
-                                    PartyData data = PartyData.get(player.serverLevel());
+                                    PartyData data = PartyData.get(player.level());
 
                                     if (!data.isLeader(player.getUUID())) {
                                         ctx.getSource().sendFailure(Component.literal("Only the party leader can remove players."));
@@ -74,7 +74,7 @@ public class PartyCommand {
                 .then(Commands.literal("list")
                         .executes(ctx -> {
                             ServerPlayer player = ctx.getSource().getPlayerOrException();
-                            PartyData data = PartyData.get(player.serverLevel());
+                            PartyData data = PartyData.get(player.level());
 
                             if (!data.isInParty(player.getUUID())) {
                                 ctx.getSource().sendFailure(Component.literal("You're not in a party."));
@@ -95,7 +95,7 @@ public class PartyCommand {
                 .then(Commands.literal("disband")
                         .executes(ctx -> {
                             ServerPlayer player = ctx.getSource().getPlayerOrException();
-                            PartyData data = PartyData.get(player.serverLevel());
+                            PartyData data = PartyData.get(player.level());
 
                             if (!data.isLeader(player.getUUID())) {
                                 ctx.getSource().sendFailure(Component.literal("Only the leader can disband the party."));
@@ -117,7 +117,7 @@ public class PartyCommand {
                 .then(Commands.literal("leave")
                         .executes(ctx -> {
                             ServerPlayer player = ctx.getSource().getPlayerOrException();
-                            PartyData data = PartyData.get(player.serverLevel());
+                            PartyData data = PartyData.get(player.level());
 
                             UUID playerId = player.getUUID();
 
@@ -127,7 +127,6 @@ public class PartyCommand {
                             }
 
                             if (data.isLeader(playerId)) {
-                                // Leader leaves = disband
                                 PartyData.Party party = data.getParty(playerId);
                                 for (UUID memberId : party.members) {
                                     ServerPlayer member = ctx.getSource().getServer().getPlayerList().getPlayer(memberId);

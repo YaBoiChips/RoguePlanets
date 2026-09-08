@@ -1,22 +1,25 @@
 package yaboichips.rogue_planets.common.entities.canon;
 
-import net.minecraft.resources.ResourceLocation;
-import software.bernie.geckolib.core.animatable.GeoAnimatable;
-import software.bernie.geckolib.model.GeoModel;
+import com.geckolib.animatable.GeoAnimatable;
+import com.geckolib.model.GeoModel;
+import com.geckolib.renderer.base.GeoRenderState;
+import net.minecraft.resources.Identifier;
 
 import static yaboichips.rogue_planets.RoguePlanets.MODID;
 
 public class CanonEntityModel<T extends GeoAnimatable> extends GeoModel<T> {
     @Override
-    public ResourceLocation getModelResource(T t) {
-        return ResourceLocation.fromNamespaceAndPath(MODID, "geo/canon.geo.json");
+    public Identifier getModelResource(GeoRenderState renderState) {
+        return Identifier.fromNamespaceAndPath(MODID, "geo/canon.geo.json");
     }
+
     @Override
-    public ResourceLocation getTextureResource(T t) {
-        return ResourceLocation.fromNamespaceAndPath(MODID, "textures/entity/canon.png");
+    public Identifier getTextureResource(GeoRenderState renderState) {
+        return Identifier.fromNamespaceAndPath(MODID, "textures/entity/canon.png");
     }
+
     @Override
-    public ResourceLocation getAnimationResource(T t) {
+    public Identifier getAnimationResource(T t) {
         return null;
     }
 }

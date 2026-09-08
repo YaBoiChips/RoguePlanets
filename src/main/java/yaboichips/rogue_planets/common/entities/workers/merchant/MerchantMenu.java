@@ -1,6 +1,6 @@
 package yaboichips.rogue_planets.common.entities.workers.merchant;
 
-import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.Container;
@@ -8,16 +8,14 @@ import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
-import net.minecraft.world.inventory.ClickType;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import yaboichips.rogue_planets.capabilties.player.PlayerDataUtils;
 import yaboichips.rogue_planets.core.RPItems;
 import yaboichips.rogue_planets.core.RPMenus;
+import yaboichips.rogue_planets.data.PlayerDataUtils;
 
 import java.util.Set;
-import java.util.function.Predicate;
 
 public class MerchantMenu extends AbstractContainerMenu {
 
@@ -26,7 +24,6 @@ public class MerchantMenu extends AbstractContainerMenu {
     public Player player;
 
     public Slot sellSlot;
-
 
     public MerchantMenu(int id, Inventory playerInventory, SimpleContainer container, Container armor) {
         super(RPMenus.MERCHANT_MENU.get(), id);
@@ -52,9 +49,10 @@ public class MerchantMenu extends AbstractContainerMenu {
         this.addSlot(sellSlot);
     }
 
-    public MerchantMenu(int i, Inventory inventory, FriendlyByteBuf friendlyByteBuf) {
+    public MerchantMenu(int i, Inventory inventory, RegistryFriendlyByteBuf buf) {
         this(i, inventory, new SimpleContainer(36), new SimpleContainer(4));
     }
+
     @Override
     public ItemStack quickMoveStack(Player player, int index) {
         ItemStack itemstack = ItemStack.EMPTY;
@@ -78,26 +76,19 @@ public class MerchantMenu extends AbstractContainerMenu {
 
         return itemstack;
     }
+
     @Override
     public boolean stillValid(Player player) {
         return container.stillValid(player);
     }
 
-//    @Override
-//    public void clicked(int slot, int p_150401_, ClickType clickType, Player p_150403_) {
-//        if (slot >= 0) {
-//            super.clicked(slot, p_150401_, clickType, p_150403_);
-//        }
-//    }
-
     public void purchaseItem(ItemStack stack, int price) {
         if (!player.level().isClientSide()) {
             if (PlayerDataUtils.getCredits((ServerPlayer) player) >= price) {
                 if (stack.is(RPItems.PLANETEER_PICKAXE.get())) {
-                    if (container.hasAnyOf(Set.of(stack.getItem()))){
+                    if (container.hasAnyOf(Set.of(stack.getItem()))) {
                         player.sendSystemMessage(Component.literal("You already have a pickaxe"));
-                    }
-                    else {
+                    } else {
                         player.sendSystemMessage(Component.literal("Don't Lose this one u BOZO"));
                         this.container.addItem(stack);
                     }
@@ -111,19 +102,19 @@ public class MerchantMenu extends AbstractContainerMenu {
         }
     }
 
-    public void buyFromPlayer(){
-        for (MerchantBuy buy : MerchantBuy.BUYS){
+    public void buyFromPlayer() {
+        for (MerchantBuy buy : MerchantBuy.BUYS) {
             ItemStack stack = sellSlot.getItem();
             Item item = stack.getItem();
-            if (item == buy.item().getItem()){
-                PlayerDataUtils.addCredits((ServerPlayer)player, buy.price() * stack.getCount());
+            if (item == buy.item().getItem()) {
+                PlayerDataUtils.addCredits((ServerPlayer) player, buy.price() * stack.getCount());
                 stack.shrink(stack.getCount());
                 break;
             }
         }
     }
 
-    public String getCredits(ServerPlayer player){
+    public String getCredits(ServerPlayer player) {
         return String.valueOf(PlayerDataUtils.getCredits(player));
     }
 }

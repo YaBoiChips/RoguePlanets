@@ -43,6 +43,10 @@
     "final_density": "rogueplanets:final_density",
     "vein_toggle": "rogueplanets:vein_toggle",
     "vein_ridged": "rogueplanets:vein_ridged",
-    "vein_gap": "rogueplanets:vein_gap"
+    "vein_gap": "rogueplanets:vein_gap",
+    "preliminary_surface_level": {
+      "type": "minecraft:constant",
+      "argument": 64
+    }
   }
 }

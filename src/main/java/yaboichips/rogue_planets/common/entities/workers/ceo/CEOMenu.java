@@ -1,6 +1,6 @@
 package yaboichips.rogue_planets.common.entities.workers.ceo;
 
-import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.Container;
@@ -8,16 +8,15 @@ import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
-import net.minecraft.world.inventory.ClickType;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
-import yaboichips.rogue_planets.capabilties.player.PlayerDataUtils;
 import yaboichips.rogue_planets.common.items.LevelableItem;
 import yaboichips.rogue_planets.core.RPItems;
 import yaboichips.rogue_planets.core.RPMenus;
+import yaboichips.rogue_planets.data.PlayerDataUtils;
 
 public class CEOMenu extends AbstractContainerMenu {
-    private Container container;
+    private final Container container;
 
     public Player player;
     private final SimpleContainer levelSlot = new SimpleContainer(1);
@@ -49,17 +48,18 @@ public class CEOMenu extends AbstractContainerMenu {
         }
     }
 
-    public CEOMenu(int i, Inventory inventory, FriendlyByteBuf friendlyByteBuf) {
+    public CEOMenu(int i, Inventory inventory, RegistryFriendlyByteBuf buf) {
         this(i, inventory, new SimpleContainer(36), new SimpleContainer(4));
     }
 
     @Override
-    public void removed(Player p_38940_) {
+    public void removed(Player player) {
         if (container instanceof SimpleContainer simpleContainer) {
             simpleContainer.addItem(levelSlot.getItem(0));
         }
-        super.removed(p_38940_);
+        super.removed(player);
     }
+
     @Override
     public ItemStack quickMoveStack(Player player, int index) {
         ItemStack itemstack = ItemStack.EMPTY;
@@ -82,15 +82,17 @@ public class CEOMenu extends AbstractContainerMenu {
         }
         return itemstack;
     }
+
     @Override
     public boolean stillValid(Player player) {
         return container.stillValid(player);
     }
+
     public void layOff() {
         if (!player.level().isClientSide()) {
             ItemStack stack = levelSlot.getItem(0);
-            if (!stack.isEmpty() && stack.getItem() instanceof LevelableItem) {
-                if (((LevelableItem) stack.getItem()).getLevel(stack) == 20) {
+            if (!stack.isEmpty() && stack.getItem() instanceof LevelableItem levelable) {
+                if (levelable.getLevel(stack) == 20) {
                     PlayerDataUtils.setInitiated((ServerPlayer) player, false);
                     player.getInventory().add(RPItems.TEST_AUGMENT.get().getDefaultInstance());
                     player.sendSystemMessage(Component.literal("If you worked longer we would have had to pay you benefits. Here's an augment as severance, come back to me when your ready to be rehired"));

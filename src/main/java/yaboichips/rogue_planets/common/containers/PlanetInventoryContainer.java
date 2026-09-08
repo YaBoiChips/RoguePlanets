@@ -9,6 +9,6 @@ public class PlanetInventoryContainer extends SaveableSimpleContainer {
 
     public PlanetInventoryContainer(Inventory inventory) {
         super(36);
-        inventory.items.forEach(this::addItem);
+        inventory.getNonEquipmentItems().forEach(this::addItem);
     }
 }

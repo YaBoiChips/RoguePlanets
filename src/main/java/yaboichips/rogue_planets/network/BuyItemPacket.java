@@ -1,47 +1,32 @@
 package yaboichips.rogue_planets.network;
 
-import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.ByteBufCodecs;
+import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
+import net.minecraft.resources.Identifier;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.network.NetworkEvent;
+import net.neoforged.neoforge.network.handling.IPayloadContext;
+import yaboichips.rogue_planets.RoguePlanets;
 import yaboichips.rogue_planets.common.entities.workers.merchant.MerchantMenu;
 
-import java.util.function.Supplier;
+public record BuyItemPacket(ItemStack itemStack, int value) implements CustomPacketPayload {
+    public static final Type<BuyItemPacket> TYPE = new Type<>(Identifier.fromNamespaceAndPath(RoguePlanets.MODID, "buy_item"));
+    public static final StreamCodec<RegistryFriendlyByteBuf, BuyItemPacket> STREAM_CODEC = StreamCodec.composite(
+            ItemStack.OPTIONAL_STREAM_CODEC, BuyItemPacket::itemStack,
+            ByteBufCodecs.VAR_INT, BuyItemPacket::value,
+            BuyItemPacket::new
+    );
 
-public class BuyItemPacket {
-    private final ItemStack itemStack;
-    private final int value;
-    public BuyItemPacket(ItemStack itemStack, int value) {
-        this.itemStack = itemStack;
-        this.value = value;
+    @Override
+    public Type<? extends CustomPacketPayload> type() {
+        return TYPE;
     }
 
-    // Encode data to the buffer
-    public static void encode(BuyItemPacket packet, FriendlyByteBuf buf) {
-        buf.writeItem(packet.itemStack);
-        buf.writeInt(packet.value);
-    }
-
-    // Decode data from the buffer
-    public static BuyItemPacket decode(FriendlyByteBuf buf) {
-        ItemStack itemStack = buf.readItem();
-        int value = buf.readInt();
-        return new BuyItemPacket(itemStack, value);
-    }
-
-    // Handle the packet on the server
-    public static void handle(BuyItemPacket packet, Supplier<NetworkEvent.Context> contextSupplier) {
-        NetworkEvent.Context context = contextSupplier.get();
-        context.enqueueWork(() -> {
-            // Ensure we are on the server side
-            if (context.getSender() != null) {
-                // Get the player and their open menu
-                if (context.getSender().containerMenu instanceof MerchantMenu menu) {
-                    ItemStack receivedStack = packet.itemStack;
-                    int price = packet.value;
-                    menu.purchaseItem(receivedStack, price);
-                }
-            }
-        });
-        context.setPacketHandled(true);
+    public static void handle(BuyItemPacket packet, IPayloadContext context) {
+        if (context.player() instanceof ServerPlayer serverPlayer && serverPlayer.containerMenu instanceof MerchantMenu menu) {
+            menu.purchaseItem(packet.itemStack(), packet.value());
+        }
     }
 }

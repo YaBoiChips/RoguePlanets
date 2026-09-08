@@ -17,8 +17,8 @@ import yaboichips.rogue_planets.RoguePlanets;
 import static yaboichips.rogue_planets.RoguePlanets.clearTask;
 
 public class RopeBlockItem extends BlockItem {
-    public RopeBlockItem(Block p_40565_, Properties p_40566_) {
-        super(p_40565_, p_40566_);
+    public RopeBlockItem(Block block, Properties properties) {
+        super(block, properties);
     }
 
     @Override
@@ -62,7 +62,7 @@ public class RopeBlockItem extends BlockItem {
     }
 
     private ItemStack findRopeInInventory(Player player) {
-        for (ItemStack stack : player.getInventory().items) {
+        for (ItemStack stack : player.getInventory().getNonEquipmentItems()) {
             if (stack.is(this)) {
                 return stack;
             }

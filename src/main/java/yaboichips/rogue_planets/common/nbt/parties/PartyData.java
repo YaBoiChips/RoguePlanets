@@ -1,51 +1,56 @@
 package yaboichips.rogue_planets.common.nbt.parties;
 
 import com.google.common.collect.Sets;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.ListTag;
-import net.minecraft.nbt.StringTag;
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.util.datafix.DataFixTypes;
 import net.minecraft.world.level.saveddata.SavedData;
+import net.minecraft.world.level.saveddata.SavedDataType;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.UUID;
 
 public class PartyData extends SavedData {
-    private static final String DATA_NAME = "my_party_data";
+    private static final Codec<UUID> UUID_CODEC = Codec.STRING.xmap(UUID::fromString, UUID::toString);
+
+    public static final SavedDataType<PartyData> TYPE = new SavedDataType<>(
+            Identifier.fromNamespaceAndPath("rogueplanets", "party_data"),
+            PartyData::new,
+            partyDataCodec(),
+            DataFixTypes.LEVEL
+    );
 
     private final Map<UUID, Party> playerPartyMap = new HashMap<>();
     private final Map<UUID, Party> parties = new HashMap<>();
 
-    public static PartyData get(ServerLevel level) {
-        return level.getServer().overworld().getDataStorage().computeIfAbsent(
-                nbt -> fromNbt(nbt),
-                PartyData::new,
-                DATA_NAME
-        );
+    public PartyData() {
     }
 
-    private static PartyData fromNbt(CompoundTag tag) {
-        PartyData data = new PartyData();
-        ListTag partyList = tag.getList("parties", 10);
-        for (int i = 0; i < partyList.size(); i++) {
-            CompoundTag partyTag = partyList.getCompound(i);
-            Party party = Party.fromNbt(partyTag);
-            data.parties.put(party.leader, party);
+    private PartyData(List<Party> loadedParties) {
+        for (Party party : loadedParties) {
+            this.parties.put(party.leader, party);
             for (UUID member : party.members) {
-                data.playerPartyMap.put(member, party);
+                this.playerPartyMap.put(member, party);
             }
         }
-        return data;
     }
 
+    private List<Party> getPartiesForSaving() {
+        return List.copyOf(new HashSet<>(parties.values()));
+    }
 
-    @Override
-    public CompoundTag save(CompoundTag tag) {
-        ListTag partyList = new ListTag();
-        for (Party party : new HashSet<>(parties.values())) {
-            partyList.add(party.toNbt());
-        }
-        tag.put("parties", partyList);
-        return tag;
+    private static Codec<PartyData> partyDataCodec() {
+        return Party.CODEC.listOf().xmap(PartyData::new, PartyData::getPartiesForSaving);
+    }
+
+    public static PartyData get(ServerLevel level) {
+        return level.getServer().getDataStorage().computeIfAbsent(TYPE);
     }
 
     // === API ===
@@ -103,6 +108,12 @@ public class PartyData extends SavedData {
 
     // === Inner Party Class ===
     public static class Party {
+        public static final Codec<Party> CODEC = RecordCodecBuilder.create(instance -> instance.group(
+                UUID_CODEC.fieldOf("leader").forGetter(p -> p.leader),
+                UUID_CODEC.listOf().xmap((List<UUID> list) -> (Set<UUID>) new HashSet<>(list), (Set<UUID> set) -> List.copyOf(set)).fieldOf("members").forGetter(p -> p.members),
+                Codec.BOOL.fieldOf("leaderInDimension").forGetter(Party::isLeaderInDimension)
+        ).apply(instance, Party::fromParts));
+
         public final UUID leader;
         public final Set<UUID> members = Sets.newHashSet();
         private boolean leaderInDimension = false;
@@ -112,6 +123,14 @@ public class PartyData extends SavedData {
             members.add(leader);
         }
 
+        private static Party fromParts(UUID leader, Set<UUID> members, boolean leaderInDimension) {
+            Party party = new Party(leader);
+            party.members.clear();
+            party.members.addAll(members);
+            party.leaderInDimension = leaderInDimension;
+            return party;
+        }
+
         public boolean isLeaderInDimension() {
             return leaderInDimension;
         }
@@ -119,34 +138,9 @@ public class PartyData extends SavedData {
         public void setLeaderInDimension(boolean inDimension) {
             this.leaderInDimension = inDimension;
         }
+
         public void toggleLeaderInDimension() {
             this.leaderInDimension = !this.leaderInDimension;
         }
-
-        public CompoundTag toNbt() {
-            CompoundTag tag = new CompoundTag();
-            tag.putUUID("leader", leader);
-            ListTag memberList = new ListTag();
-            for (UUID uuid : members) {
-                memberList.add(StringTag.valueOf(uuid.toString()));
-            }
-            tag.put("members", memberList);
-            tag.putBoolean("leaderInDimension", leaderInDimension);
-            return tag;
-        }
-
-        public static Party fromNbt(CompoundTag tag) {
-            UUID leader = tag.getUUID("leader");
-            Party party = new Party(leader);
-            party.members.clear();
-            ListTag memberList = tag.getList("members", 8);
-            for (int i = 0; i < memberList.size(); i++) {
-                UUID member = UUID.fromString(memberList.getString(i));
-                party.members.add(member);
-            }
-            party.leaderInDimension = tag.getBoolean("leaderInDimension");
-            return party;
-        }
     }
 }
-

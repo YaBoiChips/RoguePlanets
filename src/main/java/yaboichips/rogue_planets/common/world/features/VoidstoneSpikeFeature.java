@@ -27,7 +27,6 @@ public class VoidstoneSpikeFeature extends Feature<NoneFeatureConfiguration> {
         boolean stalactite = random.nextBoolean();
         Direction direction = stalactite ? Direction.DOWN : Direction.UP;
 
-        // Determine starting position
         BlockPos start = findSurface(level, origin, direction);
         if (start == null) return false;
 
@@ -37,21 +36,18 @@ public class VoidstoneSpikeFeature extends Feature<NoneFeatureConfiguration> {
 
         BlockPos.MutableBlockPos pos = start.mutable();
 
-        // Base
         for (int i = 0; i < baseHeight; i++) {
             if (!canPlace(level, pos)) return false;
             level.setBlock(pos, RPBlocks.VOIDSTONE.get().defaultBlockState(), 2);
             pos.move(direction);
         }
 
-        // Middle
         for (int i = 0; i < middleHeight; i++) {
             if (!canPlace(level, pos)) return false;
             level.setBlock(pos, RPBlocks.VOIDSTONE_SPIKE_MIDDLE.get().defaultBlockState(), 2);
             pos.move(direction);
         }
 
-        // Tip
         for (int i = 0; i < tipHeight; i++) {
             if (!canPlace(level, pos)) return false;
             level.setBlock(pos, RPBlocks.VOIDSTONE_SPIKE_TOP.get().defaultBlockState(), 2);

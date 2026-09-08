@@ -1,7 +1,7 @@
 package yaboichips.rogue_planets.common.entities.workers.ceo;
 
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -11,11 +11,11 @@ import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
-import yaboichips.rogue_planets.capabilties.player.PlayerDataUtils;
 import yaboichips.rogue_planets.common.containers.PlanetArmorContainer;
 import yaboichips.rogue_planets.common.containers.PlanetInventoryContainer;
 import yaboichips.rogue_planets.common.entities.workers.HumanMob;
 import yaboichips.rogue_planets.core.RPItems;
+import yaboichips.rogue_planets.data.PlayerDataUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,12 +23,13 @@ import java.util.List;
 import static yaboichips.rogue_planets.RoguePlanets.MODID;
 
 public class CEO extends HumanMob {
-    public CEO(EntityType<? extends Mob> p_21368_, Level p_21369_) {
-        super(p_21368_, p_21369_);
+    public CEO(EntityType<? extends Mob> type, Level level) {
+        super(type, level);
     }
+
     @Override
     protected InteractionResult mobInteract(Player p, InteractionHand hand) {
-        if (!p.level().isClientSide) {
+        if (!p.level().isClientSide()) {
             if (p instanceof ServerPlayer player) {
                 if (!PlayerDataUtils.getIsInitiated(player)) {
                     player.sendSystemMessage(Component.literal("Welcome to the team! Remember, you can come to me with anything. Just you'll get fired if you do."));
@@ -57,6 +58,7 @@ public class CEO extends HumanMob {
         items.add(torch);
         return items;
     }
+
     private List<ItemStack> armor() {
         List<ItemStack> items = new ArrayList<>();
         items.add(RPItems.PLANETEER_HELMET.get().getDefaultInstance());
@@ -65,8 +67,9 @@ public class CEO extends HumanMob {
         items.add(RPItems.PLANETEER_BOOTS.get().getDefaultInstance());
         return items;
     }
+
     @Override
-    public ResourceLocation getTextureLocation() {
-        return ResourceLocation.fromNamespaceAndPath(MODID, "textures/entity/ceo.png");
+    public Identifier getTextureLocation() {
+        return Identifier.fromNamespaceAndPath(MODID, "textures/entity/ceo.png");
     }
 }

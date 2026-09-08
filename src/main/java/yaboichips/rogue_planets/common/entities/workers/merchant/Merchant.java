@@ -1,7 +1,7 @@
 package yaboichips.rogue_planets.common.entities.workers.merchant;
 
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -10,8 +10,8 @@ import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
-import yaboichips.rogue_planets.capabilties.player.PlayerDataUtils;
 import yaboichips.rogue_planets.common.entities.workers.HumanMob;
+import yaboichips.rogue_planets.data.PlayerDataUtils;
 
 import static yaboichips.rogue_planets.RoguePlanets.MODID;
 
@@ -20,10 +20,9 @@ public class Merchant extends HumanMob {
         super(mob, level);
     }
 
-
     @Override
     protected InteractionResult mobInteract(Player p, InteractionHand hand) {
-        if (!p.level().isClientSide) {
+        if (!p.level().isClientSide()) {
             if (p instanceof ServerPlayer player) {
                 if (!PlayerDataUtils.getIsInitiated(player)) {
                     player.sendSystemMessage(Component.literal("Who are you? I only sell to qualified personal!"));
@@ -37,7 +36,7 @@ public class Merchant extends HumanMob {
     }
 
     @Override
-    public ResourceLocation getTextureLocation() {
-        return ResourceLocation.fromNamespaceAndPath(MODID, "textures/entity/merchant.png");
+    public Identifier getTextureLocation() {
+        return Identifier.fromNamespaceAndPath(MODID, "textures/entity/merchant.png");
     }
 }

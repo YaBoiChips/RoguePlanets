@@ -34,24 +34,18 @@
     },
     "horizontal_radius_multiplier": {
       "type": "minecraft:uniform",
-      "value": {
-        "min_inclusive": 0.4,
-        "max_exclusive": 1.0
-      }
+      "min_inclusive": 0.4,
+      "max_exclusive": 1.0
     },
     "vertical_radius_multiplier": {
       "type": "minecraft:uniform",
-      "value": {
-        "min_inclusive": 1.8,
-        "max_exclusive": 3.0
-      }
+      "min_inclusive": 1.8,
+      "max_exclusive": 3.0
     },
     "floor_level": {
       "type": "minecraft:uniform",
-      "value": {
-        "min_inclusive": -0.9,
-        "max_exclusive": 0.0
-      }
+      "min_inclusive": -0.9,
+      "max_exclusive": 0.0
     }
   }
 }

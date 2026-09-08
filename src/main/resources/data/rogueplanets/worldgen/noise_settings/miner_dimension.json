@@ -96,7 +96,11 @@
     },
     "vein_toggle": 12,
     "vein_ridged": 0,
-    "vein_gap": 3
+    "vein_gap": 3,
+    "preliminary_surface_level": {
+      "type": "minecraft:constant",
+      "argument": 64
+    }
   },
   "spawn_target": [],
   "surface_rule": {

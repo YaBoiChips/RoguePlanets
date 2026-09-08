@@ -4,5 +4,4 @@ public class PlanetArmorContainer extends SaveableSimpleContainer {
     public PlanetArmorContainer() {
         super(4);
     }
-
 }
