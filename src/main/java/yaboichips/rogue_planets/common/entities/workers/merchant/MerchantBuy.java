@@ -24,6 +24,9 @@ public record MerchantBuy(ItemStack item, int price){
     public static final MerchantBuy COBBLESTONE = register(new MerchantBuy(Items.COBBLESTONE.getDefaultInstance(), 0));
     public static final MerchantBuy DEEPSLATE = register(new MerchantBuy(Items.COBBLED_DEEPSLATE.getDefaultInstance(), 0));
 
+    public static final MerchantBuy CYCLOPS_EYE = register(new MerchantBuy(RPItems.CYCLOPS_EYE.get().getDefaultInstance(), 10));
+    public static final MerchantBuy ALIEN_HEART = register(new MerchantBuy(RPItems.ALIEN_HEART.get().getDefaultInstance(), 5));
+
 
     public static MerchantBuy register(MerchantBuy sale) {
         BUYS.add(sale);

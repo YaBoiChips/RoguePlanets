@@ -1,19 +1,19 @@
 package yaboichips.rogue_planets.common.entities.workers.augmentor;
 
 import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.item.ItemStack;
+import yaboichips.rogue_planets.client.gui.RPButton;
+import yaboichips.rogue_planets.client.gui.RPScreenUtil;
+import yaboichips.rogue_planets.common.items.augments.AugmentTarget;
+import yaboichips.rogue_planets.core.RPItems;
 import yaboichips.rogue_planets.network.ApplyAugmentPacket;
 import yaboichips.rogue_planets.network.RoguePackets;
-import yaboichips.rogue_planets.network.SendItemsToSlotPacket;
-
-import static yaboichips.rogue_planets.RoguePlanets.MODID;
+import yaboichips.rogue_planets.network.SelectAugmentTargetPacket;
 
 public class AugmentorScreen extends AbstractContainerScreen<AugmentorMenu> {
-    private static final ResourceLocation TEXTURE = new ResourceLocation(MODID, "textures/gui/augmentor.png");
 
     public AugmentorScreen(AugmentorMenu menu, Inventory inventory, Component title) {
         super(menu, inventory, title);
@@ -24,29 +24,47 @@ public class AugmentorScreen extends AbstractContainerScreen<AugmentorMenu> {
     @Override
     protected void init() {
         super.init();
-        int x = (this.width - this.imageWidth) / 2;
-        int y = (this.height - this.imageHeight) / 2;
-        this.addRenderableWidget(Button.builder(Component.literal("Apply Augment"), button -> {
-            RoguePackets.CHANNEL.sendToServer(new ApplyAugmentPacket());
-            this.minecraft.player.closeContainer();
-        }).bounds(x + 82, y + 66, 90, 20).build());
+        int x = this.leftPos;
+        int y = this.topPos;
+
+        AugmentTarget[] targets = AugmentTarget.values();
+        for (int i = 0; i < targets.length; i++) {
+            AugmentTarget target = targets[i];
+            this.addRenderableWidget(RPButton.iconWithLabel(
+                    x + 8, y + 8 + i * 22, 90, 20,
+                    () -> iconFor(target),
+                    Component.literal(target.getLabel()),
+                    Component.literal("Select your " + target.getLabel()),
+                    btn -> RoguePackets.CHANNEL.sendToServer(new SelectAugmentTargetPacket(target))
+            ));
+        }
+
+        this.addRenderableWidget(RPButton.text(x + 128, y + 90, 110, 20, Component.literal("Apply Augment"), btn ->
+                RoguePackets.CHANNEL.sendToServer(new ApplyAugmentPacket())
+        ).withTooltip(Component.literal("Installs the augment crystal onto the selected item")));
+    }
+
+    private static ItemStack iconFor(AugmentTarget target) {
+        return switch (target) {
+            case HELMET -> RPItems.PLANETEER_HELMET.get().getDefaultInstance();
+            case CHESTPLATE -> RPItems.PLANETEER_CHESTPLATE.get().getDefaultInstance();
+            case LEGGINGS -> RPItems.PLANETEER_LEGGINGS.get().getDefaultInstance();
+            case BOOTS -> RPItems.PLANETEER_BOOTS.get().getDefaultInstance();
+            case PICKAXE -> RPItems.PLANETEER_PICKAXE.get().getDefaultInstance();
+        };
     }
 
     @Override
     protected void renderBg(GuiGraphics guiGraphics, float partialTicks, int mouseX, int mouseY) {
-        guiGraphics.blit(TEXTURE, (this.width - this.imageWidth) / 2, (this.height - this.imageHeight) / 2, 0, 0, this.imageWidth, this.imageHeight);
-    }
-
-    @Override
-    public void onClose() {
-        RoguePackets.CHANNEL.sendToServer(new SendItemsToSlotPacket());
-        super.onClose();
+        RPScreenUtil.renderPanel(guiGraphics, this.leftPos, this.topPos, this.imageWidth, this.imageHeight);
+        RPScreenUtil.renderSlots(guiGraphics, this.menu.slots, this.leftPos, this.topPos);
+        guiGraphics.drawString(this.font, "Item", this.leftPos + 148, this.topPos + 14, 0xFFFFFF, true);
+        guiGraphics.drawString(this.font, "Augment", this.leftPos + 148, this.topPos + 48, 0xFFFFFF, true);
     }
 
     @Override
     protected void renderLabels(GuiGraphics guiGraphics, int mouseX, int mouseY) {
-        guiGraphics.drawString(this.font, this.title, this.titleLabelX, this.titleLabelY, 4210752, false);
-        guiGraphics.drawString(this.font, this.playerInventoryTitle, this.inventoryLabelX, this.inventoryLabelY, 4210752, false);
+        // No title / "Inventory" text in this GUI - the panel speaks for itself.
     }
 
     @Override

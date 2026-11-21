@@ -1,22 +1,26 @@
 package yaboichips.rogue_planets;
 
+import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.logging.LogUtils;
 import commoble.infiniverse.api.InfiniverseAPI;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
+import net.minecraftforge.client.event.RenderGuiOverlayEvent;
+import net.minecraftforge.client.gui.overlay.VanillaGuiOverlay;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.capabilities.RegisterCapabilitiesEvent;
-import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.event.AttachCapabilitiesEvent;
 import net.minecraftforge.event.RegisterCommandsEvent;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.entity.EntityAttributeCreationEvent;
-import net.minecraftforge.event.entity.EntityJoinLevelEvent;
 import net.minecraftforge.event.entity.player.AttackEntityEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
@@ -29,12 +33,16 @@ import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import org.slf4j.Logger;
 import yaboichips.rogue_planets.capabilties.ArmorData;
 import yaboichips.rogue_planets.capabilties.RogueCapabilities;
-import yaboichips.rogue_planets.capabilties.player.PlayerData;
+import yaboichips.rogue_planets.capabilties.player.ClientPlayerData;
+import yaboichips.rogue_planets.capabilties.player.IPlayerData;
 import yaboichips.rogue_planets.capabilties.player.PlayerDataProvider;
 import yaboichips.rogue_planets.capabilties.player.PlayerDataUtils;
 import yaboichips.rogue_planets.common.commands.PartyCommand;
 import yaboichips.rogue_planets.common.entities.monsters.GenericMonster;
 import yaboichips.rogue_planets.common.entities.workers.HumanMob;
+import yaboichips.rogue_planets.common.items.augments.AugmentType;
+import yaboichips.rogue_planets.common.items.augments.AugmentUtil;
+import yaboichips.rogue_planets.common.world.DimensionSeeds;
 import yaboichips.rogue_planets.core.RPEntities;
 import yaboichips.rogue_planets.network.RoguePackets;
 import yaboichips.rogue_planets.network.SendPlayerDataPacket;
@@ -71,10 +79,10 @@ public class RoguePlanets {
 
     public RoguePlanets() {
         IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
+        ENTITIES.register(modEventBus);
         MinecraftForge.EVENT_BUS.register(this);
         BLOCKS.register(modEventBus);
         ITEMS.register(modEventBus);
-        ENTITIES.register(modEventBus);
         MENUS.register(modEventBus);
         CREATIVE_MODE_TABS.register(modEventBus);
         BLOCK_ENTITY_TYPES.register(modEventBus);
@@ -92,7 +100,7 @@ public class RoguePlanets {
 
     public void registerCapabilities(RegisterCapabilitiesEvent event) {
         event.register(ArmorData.class);
-        event.register(PlayerData.class);
+        event.register(IPlayerData.class);
     }
 
     public void entityAttributes(final EntityAttributeCreationEvent event) {
@@ -124,7 +132,7 @@ public class RoguePlanets {
     }
 
     @SubscribeEvent
-    public void onPlayerJoin(EntityJoinLevelEvent event) {
+    public void onPlayerJoin(PlayerEvent.PlayerLoggedInEvent event) {
         if (event.getEntity().level().isClientSide)
             return;
         if (event.getEntity() instanceof ServerPlayer player) {
@@ -144,24 +152,21 @@ public class RoguePlanets {
         if (fromDimension.location().getNamespace().equals(MODID)) {
             if (event.getEntity().getServer().getLevel(fromDimension).players().isEmpty()) {
                 InfiniverseAPI.get().markDimensionForUnregistration(event.getEntity().getServer(), fromDimension);
+                DimensionSeeds.remove(fromDimension);
             }
         }
         if (event.isWasDeath()) {
             event.getOriginal().reviveCaps();
-            LazyOptional<PlayerData> loNewCap = event.getOriginal().getCapability(RogueCapabilities.PLAYER_DATA);
-            LazyOptional<PlayerData> loOldCap = event.getOriginal().getCapability(RogueCapabilities.PLAYER_DATA);
-            loNewCap.ifPresent(newCap -> {
-                loOldCap.ifPresent(oldCap -> {
-                    event.getOriginal().reviveCaps();
-                    PlayerDataUtils.setO2((ServerPlayer) event.getEntity(), oldCap.getO2());
-                    PlayerDataUtils.setCredits((ServerPlayer) event.getEntity(), oldCap.getCredits());
-                    PlayerDataUtils.setInitiated((ServerPlayer) event.getEntity(), oldCap.getIsInitiated());
-                    PlayerDataUtils.setPlanetContainer((ServerPlayer) event.getEntity(), oldCap.getPlanetContainer());
-                    PlayerDataUtils.setArmorContainer((ServerPlayer) event.getEntity(), oldCap.getArmorContainer());
-                });
-            });
+            event.getOriginal().getCapability(RogueCapabilities.PLAYER_DATA).ifPresent(oldStore ->
+                    event.getEntity().getCapability(RogueCapabilities.PLAYER_DATA).ifPresent(newStore ->
+                            newStore.deserializeNBT(oldStore.serializeNBT())
+                    )
+            );
+            event.getOriginal().invalidateCaps();
         }
+
     }
+
 
     @SubscribeEvent
     public void onPlayerAttack(AttackEntityEvent event) {
@@ -183,6 +188,7 @@ public class RoguePlanets {
         if (fromDimension.location().getNamespace().equals(MODID)) {
             if (event.getEntity().getServer().getLevel(fromDimension).players().isEmpty()) {
                 InfiniverseAPI.get().markDimensionForUnregistration(event.getEntity().getServer(), fromDimension);
+                DimensionSeeds.remove(fromDimension);
             }
         }
     }
@@ -193,13 +199,23 @@ public class RoguePlanets {
         ServerPlayer player = (ServerPlayer) event.player;
         RoguePackets.sendToPlayer(new SendPlayerDataPacket(PlayerDataUtils.getO2(player), PlayerDataUtils.getCredits(player)), player);
         if (player.serverLevel().dimension().location().getNamespace().equals("rogueplanets")) {
-            PlayerDataUtils.subO2(player, 1);
+            int extraTanks = countExtraTanks(player);
+            if (player.tickCount % (1 + extraTanks) == 0) {
+                PlayerDataUtils.subO2(player, 1);
+            }
             if (PlayerDataUtils.getO2(player) <= 0) {
                 if (player.isAlive()) {
                     player.kill();
                 }
             }
         }
+    }
+
+    private int countExtraTanks(ServerPlayer player) {
+        int tanks = 0;
+        if (AugmentUtil.getAugment(player.getItemBySlot(EquipmentSlot.HEAD)) == AugmentType.EXTRA_TANK) tanks++;
+        if (AugmentUtil.getAugment(player.getItemBySlot(EquipmentSlot.CHEST)) == AugmentType.EXTRA_TANK) tanks++;
+        return tanks;
     }
 
     @SubscribeEvent

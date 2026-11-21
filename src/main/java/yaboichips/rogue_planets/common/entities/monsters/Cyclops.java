@@ -13,6 +13,8 @@ public class Cyclops extends GenericMonster{
         super(monster, level);
     }
 
+
+
     @Override
     public ResourceLocation getTextureLocation() {
         return ResourceLocation.fromNamespaceAndPath(MODID, "textures/entity/cyclops.png");

@@ -62,10 +62,7 @@ public class RPBlocks {
     public static final RegistryObject<Block> THALLIUM_ORE = registerBlock("thallium_ore", RPBlocks::createOreBlock);
     public static final RegistryObject<Block> QUARTZINE_ORE = registerBlock("quartzine_ore", RPBlocks::createOreBlock);
 
-    public static Block createDeepslateOreBlock() {
-        return new Block(BlockBehaviour.Properties.copy(Blocks.DEEPSLATE_COAL_ORE));
-    }
-
+    public static Block createDeepslateOreBlock(){return new Block(BlockBehaviour.Properties.copy(Blocks.DEEPSLATE_COAL_ORE));}
     public static Block createOreBlock() {
         return new Block(BlockBehaviour.Properties.copy(Blocks.COAL_ORE));
     }

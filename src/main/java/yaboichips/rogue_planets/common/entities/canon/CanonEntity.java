@@ -44,6 +44,7 @@ import yaboichips.rogue_planets.common.containers.PlanetInventoryContainer;
 import yaboichips.rogue_planets.common.containers.SaveableSimpleContainer;
 import yaboichips.rogue_planets.common.items.LevelableItem;
 import yaboichips.rogue_planets.common.nbt.parties.PartyData;
+import yaboichips.rogue_planets.common.world.DimensionSeeds;
 import yaboichips.rogue_planets.core.RPEntities;
 
 import static yaboichips.rogue_planets.RoguePlanets.MODID;
@@ -141,8 +142,13 @@ public class CanonEntity extends Entity implements GeoEntity {
                 serverPlayer.addEffect(new MobEffectInstance(MobEffects.SLOW_FALLING, 120));
                 loadPlanetInventory(serverPlayer, PlayerDataUtils.getPlanetContainer(serverPlayer));
             } else {
-                ServerLevel world = InfiniverseAPI.get().getOrCreateLevel(serverPlayer.server, ResourceKey.create(Registries.DIMENSION, ResourceLocation.fromNamespaceAndPath(MODID, serverPlayer.getStringUUID() + "planet" + serverPlayer.level().random.nextInt())), () -> getWorldSettings(serverPlayer.serverLevel()));
-                world.getServer().getWorldData().worldGenOptions().seed = random.nextInt();
+                ResourceKey<Level> dimensionKey = ResourceKey.create(Registries.DIMENSION,
+                        ResourceLocation.fromNamespaceAndPath(MODID, serverPlayer.getStringUUID() + "planet" + serverPlayer.level().random.nextInt()));
+                // Registered before creation: ServerLevelMixin reads this the moment the level's
+                // ChunkMap is built, so each new planet generates its own terrain instead of
+                // reusing the overworld's seed.
+                DimensionSeeds.set(dimensionKey, serverPlayer.level().random.nextLong());
+                ServerLevel world = InfiniverseAPI.get().getOrCreateLevel(serverPlayer.server, dimensionKey, () -> getWorldSettings(serverPlayer.serverLevel()));
                 PlayerDataUtils.setSavedInventory(serverPlayer, new SaveableSimpleContainer(serverPlayer.getInventory()));
                 loadPlanetInventory(serverPlayer, PlayerDataUtils.getPlanetContainer(serverPlayer));
                 PlayerDataUtils.setO2(serverPlayer, 19000);

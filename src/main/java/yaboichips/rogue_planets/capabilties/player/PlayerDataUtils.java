@@ -14,7 +14,7 @@ public class PlayerDataUtils {
     }
 
     public static boolean getIsInitiated(ServerPlayer player) {
-        return player.getCapability(RogueCapabilities.PLAYER_DATA).map(PlayerData::getIsInitiated).orElse(false);
+        return player.getCapability(RogueCapabilities.PLAYER_DATA).map(IPlayerData::getIsInitiated).orElse(false);
     }
 
     public static void setCredits(ServerPlayer player, int value) {
@@ -24,7 +24,7 @@ public class PlayerDataUtils {
     }
 
     public static int getCredits(ServerPlayer player) {
-        return player.getCapability(RogueCapabilities.PLAYER_DATA).map(PlayerData::getCredits).orElse(0);
+        return player.getCapability(RogueCapabilities.PLAYER_DATA).map(IPlayerData::getCredits).orElse(0);
     }
 
     public static void addCredits(ServerPlayer player, int value) {
@@ -46,7 +46,7 @@ public class PlayerDataUtils {
     }
 
     public static int getO2(ServerPlayer player) {
-        return player.getCapability(RogueCapabilities.PLAYER_DATA).map(PlayerData::getO2).orElse(0);
+        return player.getCapability(RogueCapabilities.PLAYER_DATA).map(IPlayerData::getO2).orElse(0);
     }
 
     public static void addO2(ServerPlayer player, int value) {
@@ -68,7 +68,7 @@ public class PlayerDataUtils {
     }
 
     public static PlanetInventoryContainer getPlanetContainer(ServerPlayer player) {
-        return player.getCapability(RogueCapabilities.PLAYER_DATA).map(PlayerData::getPlanetContainer).orElse(null);
+        return player.getCapability(RogueCapabilities.PLAYER_DATA).map(IPlayerData::getPlanetContainer).orElse(null);
     }
 
     public static void setArmorContainer(ServerPlayer player, PlanetArmorContainer value) {
@@ -78,7 +78,7 @@ public class PlayerDataUtils {
     }
 
     public static PlanetArmorContainer getArmorContainer(ServerPlayer player) {
-        return player.getCapability(RogueCapabilities.PLAYER_DATA).map(PlayerData::getArmorContainer).orElse(null);
+        return player.getCapability(RogueCapabilities.PLAYER_DATA).map(IPlayerData::getArmorContainer).orElse(null);
     }
 
     public static void setSavedInventory(ServerPlayer player, SaveableSimpleContainer value) {
@@ -88,6 +88,6 @@ public class PlayerDataUtils {
     }
 
     public static SaveableSimpleContainer getSavedInventory(ServerPlayer player) {
-        return player.getCapability(RogueCapabilities.PLAYER_DATA).map(PlayerData::getSavedInventory).orElse(null);
+        return player.getCapability(RogueCapabilities.PLAYER_DATA).map(IPlayerData::getSavedInventory).orElse(null);
     }
 }

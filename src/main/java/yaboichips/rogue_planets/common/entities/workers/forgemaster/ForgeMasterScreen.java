@@ -1,27 +1,21 @@
 package yaboichips.rogue_planets.common.entities.workers.forgemaster;
 
 import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.client.gui.components.Button;
-import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
 import yaboichips.rogue_planets.capabilties.player.ClientPlayerData;
+import yaboichips.rogue_planets.client.gui.RPButton;
+import yaboichips.rogue_planets.client.gui.RPScreenUtil;
 import yaboichips.rogue_planets.network.LevelUpItemPacket;
 import yaboichips.rogue_planets.network.RoguePackets;
 
-import static yaboichips.rogue_planets.RoguePlanets.MODID;
-
 public class ForgeMasterScreen extends AbstractContainerScreen<ForgeMasterMenu> {
-    private static final ResourceLocation TEXTURE = new ResourceLocation(MODID, "textures/gui/forge_master.png");
-    private final ForgeMasterMenu menu;
 
     public ForgeMasterScreen(ForgeMasterMenu menu, Inventory inventory, Component title) {
         super(menu, inventory, title);
         this.imageWidth = 256;
         this.imageHeight = 256;
-        this.menu = menu;
     }
 
     @Override
@@ -29,17 +23,16 @@ public class ForgeMasterScreen extends AbstractContainerScreen<ForgeMasterMenu> 
         super.init();
         int x = (this.width - this.imageWidth) / 2;
         int y = (this.height - this.imageHeight) / 2;
-        this.addRenderableWidget(Button.builder(Component.literal("Level Up"), button -> {
-            RoguePackets.CHANNEL.sendToServer(new LevelUpItemPacket());
-        }).tooltip(Tooltip.create(Component.literal("Cost to upgrade, Level * 50₡"))).bounds(x + 96 , y + 70, 60, 20).build());
+        this.addRenderableWidget(RPButton.text(x + 96, y + 70, 60, 20, Component.literal("Level Up"), button ->
+                RoguePackets.CHANNEL.sendToServer(new LevelUpItemPacket())
+        ).withTooltip(Component.literal("Cost to upgrade, Level * 50₡")));
     }
-
 
     @Override
     protected void renderBg(GuiGraphics guiGraphics, float partialTicks, int mouseX, int mouseY) {
-        guiGraphics.blit(TEXTURE, (this.width - this.imageWidth) / 2, (this.height - this.imageHeight) / 2, 0, 0, this.imageWidth, this.imageHeight);
+        RPScreenUtil.renderPanel(guiGraphics, this.leftPos, this.topPos, this.imageWidth, this.imageHeight);
+        RPScreenUtil.renderSlots(guiGraphics, this.menu.slots, this.leftPos, this.topPos);
     }
-
 
     @Override
     protected void renderLabels(GuiGraphics guiGraphics, int mouseX, int mouseY) {

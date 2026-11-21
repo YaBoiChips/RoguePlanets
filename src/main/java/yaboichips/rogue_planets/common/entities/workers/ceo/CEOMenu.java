@@ -12,9 +12,15 @@ import net.minecraft.world.inventory.ClickType;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 import yaboichips.rogue_planets.capabilties.player.PlayerDataUtils;
+import yaboichips.rogue_planets.common.containers.PlanetArmorContainer;
+import yaboichips.rogue_planets.common.containers.PlanetInventoryContainer;
 import yaboichips.rogue_planets.common.items.LevelableItem;
+import yaboichips.rogue_planets.common.items.augments.AugmentType;
+import yaboichips.rogue_planets.common.items.augments.AugmentUtil;
 import yaboichips.rogue_planets.core.RPItems;
 import yaboichips.rogue_planets.core.RPMenus;
+
+import java.util.List;
 
 public class CEOMenu extends AbstractContainerMenu {
     private Container container;
@@ -87,17 +93,56 @@ public class CEOMenu extends AbstractContainerMenu {
         return container.stillValid(player);
     }
     public void layOff() {
-        if (!player.level().isClientSide()) {
-            ItemStack stack = levelSlot.getItem(0);
-            if (!stack.isEmpty() && stack.getItem() instanceof LevelableItem) {
-                if (((LevelableItem) stack.getItem()).getLevel(stack) == 20) {
-                    PlayerDataUtils.setInitiated((ServerPlayer) player, false);
-                    player.getInventory().add(RPItems.TEST_AUGMENT.get().getDefaultInstance());
-                    player.sendSystemMessage(Component.literal("If you worked longer we would have had to pay you benefits. Here's an augment as severance, come back to me when your ready to be rehired"));
-                } else {
-                    player.sendSystemMessage(Component.literal("You haven't worked long enough for the lay off, come back to me with a Level 20 Item"));
-                }
-            }
+        if (player.level().isClientSide()) return;
+        ItemStack stack = levelSlot.getItem(0);
+        if (stack.isEmpty() || !(stack.getItem() instanceof LevelableItem levelable)) return;
+
+        if (levelable.getLevel(stack) != 20) {
+            player.sendSystemMessage(Component.literal("You haven't worked long enough for the lay off, come back to me with a Level 20 Item"));
+            return;
         }
+
+        ServerPlayer serverPlayer = (ServerPlayer) player;
+        PlayerDataUtils.setInitiated(serverPlayer, false);
+
+        int recovered = dropAugments(serverPlayer);
+        if (recovered > 0) {
+            player.sendSystemMessage(Component.literal("If you worked longer we would have had to pay you benefits. Here's your " + recovered + " augment(s) back as severance."));
+        } else {
+            player.sendSystemMessage(Component.literal("If you worked longer we would have had to pay you benefits."));
+        }
+    }
+
+    /**
+     * Strips any augments off every item the player could be carrying them on and drops the
+     * matching augment item at their feet, wherever that item currently is (Augmentor storage,
+     * real inventory, or actually worn).
+     */
+    private int dropAugments(ServerPlayer player) {
+        int recovered = 0;
+
+        PlanetArmorContainer planetArmor = PlayerDataUtils.getArmorContainer(player);
+        if (planetArmor != null) recovered += dropAugmentsFrom(player, planetArmor.getItems());
+
+        PlanetInventoryContainer planetInventory = PlayerDataUtils.getPlanetContainer(player);
+        if (planetInventory != null) recovered += dropAugmentsFrom(player, planetInventory.getItems());
+
+        recovered += dropAugmentsFrom(player, player.getInventory().items);
+        recovered += dropAugmentsFrom(player, player.getInventory().armor);
+        recovered += dropAugmentsFrom(player, player.getInventory().offhand);
+
+        return recovered;
+    }
+
+    private int dropAugmentsFrom(ServerPlayer player, List<ItemStack> items) {
+        int recovered = 0;
+        for (ItemStack stack : items) {
+            AugmentType type = AugmentUtil.getAugment(stack);
+            if (type == null) continue;
+            AugmentUtil.clearAugment(stack);
+            player.drop(RPItems.getAugmentItemStack(type), false);
+            recovered++;
+        }
+        return recovered;
     }
 }

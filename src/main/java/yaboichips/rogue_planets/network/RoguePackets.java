@@ -58,10 +58,24 @@ public class RoguePackets {
         );
         CHANNEL.registerMessage(
                 packetId++,
-                SendItemsToSlotPacket.class,
-                SendItemsToSlotPacket::encode,
-                SendItemsToSlotPacket::decode,
-                SendItemsToSlotPacket::handle
+                SelectAugmentTargetPacket.class,
+                SelectAugmentTargetPacket::encode,
+                SelectAugmentTargetPacket::decode,
+                SelectAugmentTargetPacket::handle
+        );
+        CHANNEL.registerMessage(
+                packetId++,
+                DoubleJumpPacket.class,
+                DoubleJumpPacket::encode,
+                DoubleJumpPacket::decode,
+                DoubleJumpPacket::handle
+        );
+        CHANNEL.registerMessage(
+                packetId++,
+                OpenPocketsPacket.class,
+                OpenPocketsPacket::encode,
+                OpenPocketsPacket::decode,
+                OpenPocketsPacket::handle
         );
         CHANNEL.registerMessage(
                 packetId++,

@@ -29,9 +29,7 @@ public class PlayerDataProvider implements ICapabilityProvider, INBTSerializable
 
     @Override
     public CompoundTag serializeNBT() {
-        CompoundTag tag = new CompoundTag();
-        createInstance().serializeNBT(tag);
-        return tag;
+        return createInstance().serializeNBT();
     }
 
 

@@ -8,6 +8,6 @@ import net.minecraft.world.level.material.PushReaction;
 
 public class SpaceTorch extends TorchBlock {
     public SpaceTorch() {
-        super(BlockBehaviour.Properties.of().noCollission().instabreak().lightLevel((light) -> 14).sound(SoundType.WOOD).pushReaction(PushReaction.DESTROY), ParticleTypes.FLAME);
+        super(Properties.of().noCollission().instabreak().lightLevel((light) -> 14).sound(SoundType.WOOD).pushReaction(PushReaction.DESTROY), ParticleTypes.FLAME);
     }
 }

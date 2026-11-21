@@ -16,6 +16,8 @@ import net.minecraftforge.common.util.LazyOptional;
 import org.jetbrains.annotations.Nullable;
 import yaboichips.rogue_planets.capabilties.ArmorData;
 import yaboichips.rogue_planets.capabilties.RogueCapabilities;
+import yaboichips.rogue_planets.common.items.augments.AugmentType;
+import yaboichips.rogue_planets.common.items.augments.AugmentUtil;
 
 import java.util.List;
 
@@ -54,6 +56,8 @@ public class ExplorerSuit extends ArmorItem implements LevelableItem{
         if (stack.getItem() instanceof LevelableItem) {
             components.add(Component.literal("Level " + stack.getTag().getInt("Level")));
         }
+        AugmentType augment = AugmentUtil.getAugment(stack);
+        components.add(Component.literal(augment == null ? "No augment installed" : "Augment: " + augment.getDisplayName()));
         super.appendHoverText(stack, p_41422_, components, p_41424_);
     }
 

@@ -23,7 +23,21 @@
   "item.rogueplanets.jerky": "Jerky",
   "item.rogueplanets.ammo": "Magazine",
 
-  "item.rogueplanets.test_augment": "Test Augment",
+  "item.rogueplanets.augment_lower_gravity": "Lower Gravity Augment",
+  "item.rogueplanets.augment_step_up": "Step Up Augment",
+  "item.rogueplanets.augment_double_jump": "Double Jump Augment",
+  "item.rogueplanets.augment_extra_tank": "Extra Tank Augment",
+  "item.rogueplanets.augment_night_vision": "Night Vision Augment",
+  "item.rogueplanets.augment_pockets": "Pockets Augment",
+  "item.rogueplanets.augment_thorns": "Thorns Augment",
+  "item.rogueplanets.augment_speed": "Speed Augment",
+  "item.rogueplanets.augment_auto_feed": "Auto Feed Augment",
+  "item.rogueplanets.augment_berserk_mining": "Berserk Mining Augment",
+  "item.rogueplanets.augment_wall_jump": "Wall Jump Augment",
+  "item.rogueplanets.augment_vein_mining": "Vein Mining Augment",
+
+  "key.categories.rogueplanets": "Rogue Planets",
+  "key.rogueplanets.open_pockets": "Open Pockets",
 
   "item.rogueplanets.credit": "Credit",
   "item.rogueplanets.high_credit": "High Credit",

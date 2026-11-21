@@ -10,8 +10,11 @@ import net.minecraft.client.model.geom.builders.LayerDefinition;
 import net.minecraft.client.renderer.ItemBlockRenderTypes;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.entity.EntityRenderers;
+import net.minecraft.client.renderer.entity.ThrownItemRenderer;
+import net.minecraft.world.entity.EntityType;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.EntityRenderersEvent;
+import net.minecraftforge.client.event.RegisterKeyMappingsEvent;
 import net.minecraftforge.client.event.RenderGuiOverlayEvent;
 import net.minecraftforge.client.gui.overlay.VanillaGuiOverlay;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -19,6 +22,7 @@ import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import yaboichips.rogue_planets.RoguePlanets;
 import yaboichips.rogue_planets.capabilties.player.ClientPlayerData;
+import yaboichips.rogue_planets.client.KeyBindings;
 import yaboichips.rogue_planets.client.renderers.GenericMonsterRenderer;
 import yaboichips.rogue_planets.client.renderers.HumanRenderer;
 import yaboichips.rogue_planets.common.entities.canon.CanonEntityRenderer;
@@ -26,6 +30,7 @@ import yaboichips.rogue_planets.common.entities.workers.augmentor.AugmentorScree
 import yaboichips.rogue_planets.common.entities.workers.ceo.CEOScreen;
 import yaboichips.rogue_planets.common.entities.workers.forgemaster.ForgeMasterScreen;
 import yaboichips.rogue_planets.common.entities.workers.merchant.MerchantScreen;
+import yaboichips.rogue_planets.common.items.augments.PocketsScreen;
 import yaboichips.rogue_planets.core.RPBlocks;
 import yaboichips.rogue_planets.core.RPEntities;
 import yaboichips.rogue_planets.core.RPMenus;
@@ -39,6 +44,7 @@ public class ClientEvents {
             MenuScreens.register(RPMenus.MERCHANT_MENU.get(), MerchantScreen::new);
             MenuScreens.register(RPMenus.AUGMENTOR_MENU.get(), AugmentorScreen::new);
             MenuScreens.register(RPMenus.CEO_MENU.get(), CEOScreen::new);
+            MenuScreens.register(RPMenus.POCKETS_MENU.get(), PocketsScreen::new);
 
             EntityRenderers.register(RPEntities.FORGE_MASTER.get(), HumanRenderer::new);
             EntityRenderers.register(RPEntities.RP_MERCHANT.get(), HumanRenderer::new);
@@ -49,11 +55,18 @@ public class ClientEvents {
             EntityRenderers.register(RPEntities.CYCLOPS.get(), GenericMonsterRenderer::new);
             EntityRenderers.register(RPEntities.ALIEN.get(), GenericMonsterRenderer::new);
 
+            EntityRenderers.register(RPEntities.PORTAPLATFORM.get(), ThrownItemRenderer::new);
+
             ItemBlockRenderTypes.setRenderLayer(
                     RPBlocks.SPACE_TORCH.get(),
                     RenderType.cutout()
             );
         });
+    }
+
+    @SubscribeEvent
+    public static void registerKeyMappings(RegisterKeyMappingsEvent event) {
+        event.register(KeyBindings.OPEN_POCKETS);
     }
 
     @SubscribeEvent
@@ -66,33 +79,5 @@ public class ClientEvents {
                         64
                 )
         );
-    }
-    @SubscribeEvent
-    public void onRenderGuiOverlay(RenderGuiOverlayEvent event) {
-        if (event.getOverlay() == VanillaGuiOverlay.PLAYER_HEALTH.type()) {
-            renderIntOnHud(event.getGuiGraphics());
-        }
-    }
-    private void renderIntOnHud(GuiGraphics guiGraphics) {
-        Minecraft mc = Minecraft.getInstance();
-        if (mc.player == null) return;
-        if (!mc.player.isLocalPlayer()) return;
-        if (mc.player.level().dimension().location().getPath().contains("planet")) {
-            String text = formatTicksToTime(ClientPlayerData.getO2());
-            int x = 5;
-            int y = mc.getWindow().getGuiScaledHeight() - 15;
-            RenderSystem.enableBlend();
-            guiGraphics.drawString(mc.font, text, x, y, 0xFFFFFF);
-            RenderSystem.disableBlend();
-        }
-    }
-    public static String formatTicksToTime(int ticks) {
-        int totalSeconds = ticks / 20;
-
-        int hours = totalSeconds / 3600;
-        int minutes = (totalSeconds % 3600) / 60;
-        int seconds = totalSeconds % 60;
-
-        return String.format("%02d:%02d:%02d", hours, minutes, seconds);
     }
 }

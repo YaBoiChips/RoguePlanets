@@ -32,8 +32,11 @@
       "rogueplanets:angled_arch",
       "rogueplanets:voidstone_stalagmites",
       "rogueplanets:voidstone_blobs",
-      "rogueplanets:cobbled_voidstone"
-
+      "rogueplanets:cobbled_voidstone",
+      "rogueplanets:small_camp",
+      "rogueplanets:camp_large1",
+      "rogueplanets:small_house1",
+      "rogueplanets:large_house1"
     ]
   ],
   "spawners": {},

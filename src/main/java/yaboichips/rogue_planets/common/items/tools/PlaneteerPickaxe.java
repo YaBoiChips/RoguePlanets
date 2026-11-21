@@ -2,6 +2,8 @@ package yaboichips.rogue_planets.common.items.tools;
 
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.protocol.game.ClientboundSetEntityMotionPacket;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.LivingEntity;
@@ -13,27 +15,36 @@ import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.common.ToolAction;
-import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import org.jetbrains.annotations.Nullable;
-import yaboichips.rogue_planets.capabilties.RogueCapabilities;
-import yaboichips.rogue_planets.capabilties.augments.AugCapProvider;
 import yaboichips.rogue_planets.common.items.LevelableItem;
+import yaboichips.rogue_planets.common.items.augments.AugmentType;
+import yaboichips.rogue_planets.common.items.augments.AugmentUtil;
 
 import java.util.List;
 
 public class PlaneteerPickaxe extends PickaxeItem implements LevelableItem {
+    private static final float WALL_JUMP_HORIZONTAL = 1.2F;
+    private static final float WALL_JUMP_VERTICAL = 0.7F;
+    private static final int WALL_JUMP_COOLDOWN_TICKS = 30;
+
     public PlaneteerPickaxe() {
         super(Tiers.IRON, 1, -2.8F, new Properties());
     }
 
     @Override
-    public @Nullable ICapabilityProvider initCapabilities(ItemStack stack, @Nullable CompoundTag nbt) {
-        return new AugCapProvider();
-    }
-
-    @Override
     public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand hand) {
+        ItemStack stack = player.getItemInHand(hand);
+        if (AugmentUtil.getAugment(stack) == AugmentType.WALL_JUMP) {
+            if (!level.isClientSide() && player instanceof ServerPlayer serverPlayer && !player.getCooldowns().isOnCooldown(this)) {
+                Vec3 look = player.getLookAngle();
+                player.setDeltaMovement(player.getDeltaMovement().add(look.x * WALL_JUMP_HORIZONTAL, WALL_JUMP_VERTICAL, look.z * WALL_JUMP_HORIZONTAL));
+                serverPlayer.connection.send(new ClientboundSetEntityMotionPacket(player));
+                player.getCooldowns().addCooldown(this, WALL_JUMP_COOLDOWN_TICKS);
+            }
+            return InteractionResultHolder.success(stack);
+        }
         if (player.getMainHandItem().getDamageValue()< 1) {
             return InteractionResultHolder.fail(player.getMainHandItem());
         }
@@ -50,7 +61,12 @@ public class PlaneteerPickaxe extends PickaxeItem implements LevelableItem {
         if (stack.getDamageValue() >= stack.getMaxDamage() - 1) {
             return 0.0F;
         }
-        return Math.round(super.getDestroySpeed(stack, state) * Math.pow(1 + 0.1, getLevel(stack)));
+        float speed = (float) Math.round(super.getDestroySpeed(stack, state) * Math.pow(1 + 0.1, getLevel(stack)));
+        if (AugmentUtil.getAugment(stack) == AugmentType.BERSERK_MINING) {
+            float wornFraction = stack.getDamageValue() / (float) stack.getMaxDamage();
+            speed *= 1.0F + wornFraction;
+        }
+        return speed;
     }
 
     @Override
@@ -76,6 +92,8 @@ public class PlaneteerPickaxe extends PickaxeItem implements LevelableItem {
         if (stack.getItem() instanceof LevelableItem) {
             components.add(Component.literal("Level " + stack.getTag().getInt("Level")));
         }
+        AugmentType augment = AugmentUtil.getAugment(stack);
+        components.add(Component.literal(augment == null ? "No augment installed" : "Augment: " + augment.getDisplayName()));
         super.appendHoverText(stack, p_41422_, components, p_41424_);
     }
 
@@ -84,15 +102,6 @@ public class PlaneteerPickaxe extends PickaxeItem implements LevelableItem {
         CompoundTag tag = stack.getTag();
         tag.putInt("Level", getLevel(stack));
         stack.setTag(tag);
-        stack.getCapability(RogueCapabilities.AUGMENTABLE).ifPresent(capability -> {
-            if (getLevel(stack) == 5) {
-                capability.setAugmentSlots(1);
-            } else if (getLevel(stack) == 10) {
-                capability.setAugmentSlots(2);
-            } else if (getLevel(stack) == 15) {
-                capability.setAugmentSlots(3);
-            }
-        });
     }
 
     @Override

@@ -9,6 +9,7 @@ import yaboichips.rogue_planets.common.entities.workers.augmentor.AugmentorMenu;
 import yaboichips.rogue_planets.common.entities.workers.ceo.CEOMenu;
 import yaboichips.rogue_planets.common.entities.workers.forgemaster.ForgeMasterMenu;
 import yaboichips.rogue_planets.common.entities.workers.merchant.MerchantMenu;
+import yaboichips.rogue_planets.common.items.augments.PocketsMenu;
 
 import static yaboichips.rogue_planets.RoguePlanets.MODID;
 
@@ -20,4 +21,5 @@ public class RPMenus {
     public static final RegistryObject<MenuType<MerchantMenu>> MERCHANT_MENU = MENUS.register("rp_merchant_menu", () -> IForgeMenuType.create(MerchantMenu::new));
     public static final RegistryObject<MenuType<AugmentorMenu>> AUGMENTOR_MENU = MENUS.register("augmentor_menu", () -> IForgeMenuType.create(AugmentorMenu::new));
     public static final RegistryObject<MenuType<CEOMenu>> CEO_MENU = MENUS.register("ceo_menu", () -> IForgeMenuType.create(CEOMenu::new));
+    public static final RegistryObject<MenuType<PocketsMenu>> POCKETS_MENU = MENUS.register("pockets_menu", () -> IForgeMenuType.create(PocketsMenu::new));
 }

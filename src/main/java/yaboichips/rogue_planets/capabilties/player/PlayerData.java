@@ -13,7 +13,7 @@ import yaboichips.rogue_planets.common.containers.SaveableSimpleContainer;
 import java.util.ArrayList;
 import java.util.List;
 
-public class PlayerData {
+public class PlayerData implements IPlayerData{
     public boolean isInitiated;
     public int credits;
     public int o2;
@@ -107,16 +107,18 @@ public class PlayerData {
     }
 
 
-    public void serializeNBT(CompoundTag tag) {
+    @Override
+    public CompoundTag serializeNBT() {
+        CompoundTag tag = new CompoundTag();
         tag.put("PlanetInventory", this.planetInventory.createTag());
         tag.put("ArmorPlanetInventory", this.armorContainer.createTag());
         tag.put("SavedPlayerInventory", createTag(playerInventory));
         tag.putBoolean("Initiated", getIsInitiated());
         tag.putInt("Credits", getCredits());
-        tag.putInt("O2", getCredits());
+        tag.putInt("O2", getO2());
+        return tag;
     }
-
-
+    @Override
     public void deserializeNBT(CompoundTag tag) {
         if (tag.contains("PlanetInventory")) {
             this.planetInventory.fromTag(tag.getList("PlanetInventory", 10));

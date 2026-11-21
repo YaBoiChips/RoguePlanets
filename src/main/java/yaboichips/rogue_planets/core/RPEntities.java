@@ -5,10 +5,11 @@ import net.minecraft.world.entity.MobCategory;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegistryObject;
+import yaboichips.rogue_planets.common.entities.PortAPlatform;
+import yaboichips.rogue_planets.common.entities.canon.CanonEntity;
 import yaboichips.rogue_planets.common.entities.monsters.Alien;
 import yaboichips.rogue_planets.common.entities.monsters.Cyclops;
 import yaboichips.rogue_planets.common.entities.workers.augmentor.Augmentor;
-import yaboichips.rogue_planets.common.entities.canon.CanonEntity;
 import yaboichips.rogue_planets.common.entities.workers.ceo.CEO;
 import yaboichips.rogue_planets.common.entities.workers.forgemaster.ForgeMaster;
 import yaboichips.rogue_planets.common.entities.workers.merchant.Merchant;
@@ -26,5 +27,5 @@ public class RPEntities {
     public static final RegistryObject<EntityType<Cyclops>> CYCLOPS = ENTITIES.register("cyclops", () -> EntityType.Builder.of(Cyclops::new, MobCategory.MONSTER).sized(0.8f, 1.8f).build("cyclops"));
     public static final RegistryObject<EntityType<Alien>> ALIEN = ENTITIES.register("alien", () -> EntityType.Builder.of(Alien::new, MobCategory.MONSTER).sized(0.8f, 1.8f).build("alien"));
     public static final RegistryObject<EntityType<CanonEntity>> CANON = ENTITIES.register("canon", () -> EntityType.Builder.of(CanonEntity::new, MobCategory.MISC).sized(1, 0.5f).build("canon"));
-
+    public static final RegistryObject<EntityType<PortAPlatform>> PORTAPLATFORM = ENTITIES.register("portaplatform", () -> EntityType.Builder.<PortAPlatform>of(PortAPlatform::new, MobCategory.MISC).sized(0.2f, 0.2f).build("portaplatform"));
 }
